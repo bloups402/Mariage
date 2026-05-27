@@ -3,46 +3,88 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Mariage d'Antonin & Marie</title>
+    <title>Mariage Antonin & Marie</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<header>
-    <h1>Antonin & Marie</h1>
-    <p>Se marient ! 💍</p>
-    <p>12 Juin 2027</p>
+<!-- MENU -->
+<nav>
+    <ul>
+        <li><a href="#home">Accueil</a></li>
+        <li><a href="#story">Notre histoire</a></li>
+        <li><a href="#info">Infos</a></li>
+        <li><a href="#rsvp">RSVP</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+</nav>
+
+<!-- HERO IMAGE -->
+<header id="home">
+    <div class="overlay">
+        <h1>Antonin & Marie</h1>
+        <p>12 Juin 2027</p>
+        <a href="#rsvp" class="btn">Confirmer ma présence</a>
+    </div>
 </header>
 
-<section>
-    <h2>Notre histoire</h2>
-    <p>Tout a commencé en 2020... ❤️</p>
+<!-- HISTOIRE -->
+<section id="story">
+    <h2>Notre histoire ❤️</h2>
+    <p>
+        Tout a commencé en 2020... une rencontre, des regards,
+        et une évidence. Aujourd’hui, nous avons hâte de partager
+        ce moment avec vous.
+    </p>
 </section>
 
-<section>
+<!-- INFOS -->
+<section id="info">
     <h2>Informations</h2>
-    <p>📍 Lieu : Château de Paris</p>
-    <p>⏰ Heure : 15h00</p>
+    <p><strong>Lieu :</strong> Domaine de la Belle Vue</p>
+    <p><strong>Adresse :</strong> 123 rue du bonheur, 75000 Paris</p>
+    <p><strong>Horaire :</strong> 15h00</p>
+
+    <h3>Programme</h3>
+    <ul>
+        <li>15h : Cérémonie</li>
+        <li>17h : Vin d’honneur</li>
+        <li>19h : Dîner</li>
+        <li>22h : Soirée</li>
+    </ul>
 </section>
 
-<section>
+<!-- RSVP -->
+<section id="rsvp">
     <h2>Confirmez votre présence</h2>
     <form id="rsvpForm">
         <input type="text" placeholder="Votre nom" required>
+        
         <select required>
-            <option value="">Présence ?</option>
+            <option value="">Serez-vous présent ?</option>
             <option>Oui</option>
             <option>Non</option>
         </select>
+
         <button type="submit">Envoyer</button>
     </form>
+
     <p id="message"></p>
 </section>
 
+<!-- CONTACT -->
+<section id="contact">
+    <h2>Contact</h2>
+    <p>Email : mariage@email.com</p>
+</section>
+
+<!-- FOOTER -->
 <footer>
     <p>On a hâte de vous voir ❤️</p>
 </footer>
 
 <script src="script.js"></script>
+
 </body>
 </html>
