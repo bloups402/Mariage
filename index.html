@@ -1,90 +1,383 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <title>Mariage Antonin & Marie</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marine & Antonin — 26 Juin 2027</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<!-- MENU -->
+<!-- NAV -->
 <nav>
-    <ul>
-        <li><a href="#home">Accueil</a></li>
-        <li><a href="#story">Notre histoire</a></li>
-        <li><a href="#info">Infos</a></li>
-        <li><a href="#rsvp">RSVP</a></li>
-        <li><a href="#contact">Contact</a></li>
-    </ul>
+  <div class="nav-brand">Marine & Antonin</div>
+  <ul class="nav-links">
+    <li><a href="#accueil">Accueil</a></li>
+    <li><a href="#infos">Le Jour J</a></li>
+    <li><a href="#hebergements">Hébergements</a></li>
+    <li><a href="#acces">Accès</a></li>
+    <li><a href="#programme">Programme</a></li>
+    <li><a href="#menu">Menu</a></li>
+  </ul>
 </nav>
 
-<!-- HERO IMAGE -->
-<header id="home">
-    <div class="overlay">
-        <h1>Antonin & Marie</h1>
-        <p>12 Juin 2027</p>
-        <a href="#rsvp" class="btn">Confirmer ma présence</a>
-    </div>
-</header>
+<!-- HERO / ACCUEIL -->
+<section id="accueil" class="page" style="min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:6rem 2rem 4rem; background:var(--white);">
+  <div class="hero-bg"></div>
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;">
+    <div class="hero-line"></div>
+    <p class="hero-eyebrow">Nous nous marions</p>
+    <h1 class="hero-names">
+      Marine
+      <span class="hero-amp">&amp;</span>
+      Antonin
+    </h1>
+    <p class="hero-date">Samedi 26 Juin 2027</p>
+    <p class="hero-location">Domaine de Berville · La Genevraye, Seine-et-Marne</p>
 
-<!-- HISTOIRE -->
-<section id="story">
-    <h2>Notre histoire ❤️</h2>
-    <p>
-        Tout a commencé en 2020... une rencontre, des regards,
-        et une évidence. Aujourd’hui, nous avons hâte de partager
-        ce moment avec vous.
-    </p>
+    <div class="countdown" id="countdown">
+      <div class="countdown-item">
+        <div class="countdown-num" id="cd-j">—</div>
+        <div class="countdown-label">Jours</div>
+      </div>
+      <div class="countdown-sep">·</div>
+      <div class="countdown-item">
+        <div class="countdown-num" id="cd-h">—</div>
+        <div class="countdown-label">Heures</div>
+      </div>
+      <div class="countdown-sep">·</div>
+      <div class="countdown-item">
+        <div class="countdown-num" id="cd-m">—</div>
+        <div class="countdown-label">Minutes</div>
+      </div>
+    </div>
+
+    <!-- RSVP -->
+    <div class="rsvp-section">
+      <p class="rsvp-title">Confirmer votre présence</p>
+      <div class="rsvp-form" id="rsvpForm">
+        <div class="rsvp-row">
+          <input class="rsvp-input" type="text" id="rsvp-prenom" placeholder="Prénom">
+          <input class="rsvp-input" type="text" id="rsvp-nom" placeholder="Nom">
+        </div>
+        <input class="rsvp-input" type="email" id="rsvp-email" placeholder="Adresse e-mail">
+        <div class="rsvp-row">
+          <select class="rsvp-select" id="rsvp-presence" style="flex:1">
+            <option value="">Présence</option>
+            <option value="oui">✓ Je serai présent(e)</option>
+            <option value="non">✗ Je ne pourrai pas venir</option>
+          </select>
+          <select class="rsvp-select" id="rsvp-repas" style="flex:1">
+            <option value="">Régime alimentaire</option>
+            <option value="aucun">Aucune restriction</option>
+            <option value="vegetarien">Végétarien</option>
+            <option value="vegan">Vegan</option>
+            <option value="sans-gluten">Sans gluten</option>
+            <option value="autre">Autre allergie</option>
+          </select>
+        </div>
+        <button class="rsvp-btn" onclick="submitRSVP()">Confirmer ma présence</button>
+      </div>
+      <div class="rsvp-success" id="rsvpSuccess">
+        Merci — nous avons bien reçu votre réponse. À très bientôt ! 🤍
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- INFOS -->
-<section id="info">
-    <h2>Informations</h2>
-    <p><strong>Lieu :</strong> Domaine de la Belle Vue</p>
-    <p><strong>Adresse :</strong> 123 rue du bonheur, 75000 Paris</p>
-    <p><strong>Horaire :</strong> 15h00</p>
-
-    <h3>Programme</h3>
-    <ul>
-        <li>15h : Cérémonie</li>
-        <li>17h : Vin d’honneur</li>
-        <li>19h : Dîner</li>
-        <li>22h : Soirée</li>
-    </ul>
+<section id="infos" class="page">
+  <div class="page-inner">
+    <p class="section-label">Le Jour J</p>
+    <h2 class="section-title">Informations<br><em style="font-style:italic;color:var(--accent)">essentielles</em></h2>
+    <div class="section-divider"></div>
+    <div class="info-grid">
+      <!-- PHOTO EN PREMIER -->
+      <div class="info-card" style="grid-column:1/-1; padding:0; overflow:hidden;">
+        <div id="photoZone" onclick="document.getElementById('photoInput').click()"
+          style="width:100%; min-height:380px; background:var(--gray-light); display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; position:relative; transition:background 0.2s;">
+          <img id="photoPreview" src="" alt="" style="display:none; width:100%; height:380px; object-fit:cover; object-position:center;">
+          <div id="photoPlaceholder" style="display:flex;flex-direction:column;align-items:center;gap:1rem;padding:3rem;">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--gray-mid)" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            <div style="font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gray-mid);">Ajouter une photo</div>
+            <div style="font-size:0.75rem;color:var(--gray-mid);">Cliquez pour choisir une photo de vous deux</div>
+          </div>
+          <div id="photoRemove" onclick="removePhoto(event)" style="display:none; position:absolute; top:1rem; right:1rem; background:rgba(0,0,0,0.5); color:white; border:none; font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; padding:0.4rem 0.8rem; cursor:pointer;">✕ Retirer</div>
+        </div>
+        <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="loadPhoto(event)">
+      </div>
+      <div class="info-card">
+        <div class="info-card-label">Date</div>
+        <div class="info-card-value">Samedi 26 Juin 2027</div>
+        <div class="info-card-sub">Cérémonie à 15h00</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-label">Lieu de la cérémonie</div>
+        <div class="info-card-value">Domaine de Berville</div>
+        <div class="info-card-sub">17 Rte de Moret, 77690 La Genevraye</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-label">Tenue souhaitée</div>
+        <div class="info-card-value">Tenue habillée de rigueur</div>
+        <div class="info-card-sub">Costume ou smoking pour les hommes, robe ou tailleur pour les femmes. Le blanc est réservé à la mariée.</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-label">Confirmation de présence</div>
+        <div class="info-card-value">Avant le 1er Avril 2027</div>
+        <div class="info-card-sub">Via le formulaire en haut de page ou par e-mail</div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- RSVP -->
-<section id="rsvp">
-    <h2>Confirmez votre présence</h2>
-    <form id="rsvpForm">
-        <input type="text" placeholder="Votre nom" required>
-        
-        <select required>
-            <option value="">Serez-vous présent ?</option>
-            <option>Oui</option>
-            <option>Non</option>
-        </select>
-
-        <button type="submit">Envoyer</button>
-    </form>
-
-    <p id="message"></p>
+<!-- HÉBERGEMENTS -->
+<section id="hebergements" class="page">
+  <div class="page-inner">
+    <p class="section-label">Où dormir</p>
+    <h2 class="section-title">Hébergements<br><em style="font-style:italic;color:var(--accent)">à proximité</em></h2>
+    <div class="section-divider"></div>
+    <p style="font-size:0.85rem;color:var(--gray-mid);margin-bottom:2.5rem;max-width:520px;">
+      Nous avons sélectionné quelques établissements proches du domaine. Pensez à réserver rapidement, les disponibilités sont limitées en juin.
+    </p>
+    <div class="hotels-list">
+      <div class="hotel-item">
+        <div class="hotel-info">
+          <div class="hotel-name">Château Les Glycines</div>
+          <div class="hotel-addr">12 Avenue du Château, 33000 Bordeaux</div>
+          <div class="hotel-stars">★★★★</div>
+        </div>
+        <div style="text-align:right">
+          <div class="hotel-dist">à 2,5 km du domaine</div>
+          <a href="#" style="font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--black);text-decoration:none;border-bottom:1px solid var(--accent);margin-top:0.5rem;display:inline-block;">Réserver →</a>
+        </div>
+      </div>
+      <div class="hotel-item">
+        <div class="hotel-info">
+          <div class="hotel-name">Hôtel du Domaine</div>
+          <div class="hotel-addr">8 Rue de la Vigne, 33240 Saint-André-de-Cubzac</div>
+          <div class="hotel-stars">★★★</div>
+        </div>
+        <div style="text-align:right">
+          <div class="hotel-dist">à 4 km du domaine</div>
+          <a href="#" style="font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--black);text-decoration:none;border-bottom:1px solid var(--accent);margin-top:0.5rem;display:inline-block;">Réserver →</a>
+        </div>
+      </div>
+      <div class="hotel-item">
+        <div class="hotel-info">
+          <div class="hotel-name">La Maison d'Hôtes du Bois</div>
+          <div class="hotel-addr">Route du Bois Fleuri, 33240 Cézac</div>
+          <div class="hotel-stars">★★★ · Chambre d'hôtes</div>
+        </div>
+        <div style="text-align:right">
+          <div class="hotel-dist">à 5,5 km du domaine</div>
+          <a href="#" style="font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--black);text-decoration:none;border-bottom:1px solid var(--accent);margin-top:0.5rem;display:inline-block;">Réserver →</a>
+        </div>
+      </div>
+      <div class="hotel-item">
+        <div class="hotel-info">
+          <div class="hotel-name">Ibis Styles Fontainebleau</div>
+          <div class="hotel-addr">Place de la République, 77300 Fontainebleau</div>
+          <div class="hotel-stars">★★ · Budget</div>
+        </div>
+        <div style="text-align:right">
+          <div class="hotel-dist">à 10 km du domaine</div>
+          <a href="#" style="font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--black);text-decoration:none;border-bottom:1px solid var(--accent);margin-top:0.5rem;display:inline-block;">Réserver →</a>
+        </div>
+      </div>
+    </div>
+    <p style="margin-top:1.5rem;font-size:0.75rem;color:var(--gray-mid);">
+      Un bus navette sera organisé depuis la gare de Moret – Veneux-les-Sablons · Retour prévu à 01h00 et 03h00
+    </p>
+  </div>
 </section>
 
-<!-- CONTACT -->
-<section id="contact">
-    <h2>Contact</h2>
-    <p>Email : mariage@email.com</p>
+<!-- ACCÈS -->
+<section id="acces" class="page">
+  <div class="page-inner">
+    <p class="section-label">Comment venir</p>
+    <h2 class="section-title">Accès au<br><em style="font-style:italic;color:var(--accent)">domaine</em></h2>
+    <div class="section-divider"></div>
+    <div class="acces-grid">
+      <div class="acces-block">
+        <div class="acces-block-title">🚗 En voiture</div>
+        <ul class="acces-steps">
+          <li>Depuis Paris · A6 direction Lyon, sortie Fontainebleau (n°14), puis D606 direction Moret-sur-Loing</li>
+          <li>Depuis la N7, prendre la direction La Genevraye</li>
+          <li>Suivre « Route de Moret » — le domaine est au n°17, sur la gauche</li>
+        </ul>
+        <p style="font-size:0.75rem;color:var(--gray-mid);margin-top:1rem;">Parking gratuit sur place · Environ 1h depuis Paris</p>
+      </div>
+      <div class="acces-block">
+        <div class="acces-block-title">🚆 En train & navette</div>
+        <ul class="acces-steps">
+          <li>Ligne R (Transilien) depuis Paris Gare de Lyon jusqu'à Moret – Veneux-les-Sablons</li>
+          <li>Durée : environ 55 min</li>
+          <li>Une navette sera organisée depuis la gare jusqu'au domaine</li>
+          <li>Retour navette prévu à 01h00 et 03h00</li>
+        </ul>
+      </div>
+    </div>
+    <div style="margin-top:3rem; border:1px solid var(--gray-light); overflow:hidden;">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2645.0!2d2.789!3d48.376!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e58b6af5cb5abd%3A0x1140c9d62be02506!2sDomaine%20de%20Berville%2C%2017%20Rte%20de%20Moret%2C%2077690%20La%20Genevraye!5e0!3m2!1sfr!2sfr!4v1700000000000"
+        width="100%" height="300" style="border:0; display:block;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+      <div style="padding:1rem 1.5rem; background:var(--white); display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:0.8rem;color:var(--gray-dark);">17 Rte de Moret, 77690 La Genevraye</span>
+        <a href="https://www.google.com/maps/place//data=!4m2!3m1!1s0x47e58b6af5cb5abd:0x1140c9d62be02506" target="_blank"
+          style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--black);text-decoration:none;border-bottom:1px solid var(--accent);padding-bottom:0.1rem;">
+          Ouvrir dans Maps →
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRAMME -->
+<section id="programme" class="page">
+  <div class="page-inner">
+    <p class="section-label">Déroulé de la journée</p>
+    <h2 class="section-title">Programme<br><em style="font-style:italic;color:var(--accent)">du 26 juin</em></h2>
+    <div class="section-divider"></div>
+    <div style="max-width:520px;">
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-time">14h30</div>
+          <div class="timeline-event">Accueil des invités</div>
+          <div class="timeline-desc">Arrivée au domaine, installation et cocktail d'accueil dans les jardins</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-time">15h00</div>
+          <div class="timeline-event">Cérémonie laïque</div>
+          <div class="timeline-desc">Cérémonie en plein air dans le parc du domaine</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-time">16h00</div>
+          <div class="timeline-event">Vin d'honneur & cocktail</div>
+          <div class="timeline-desc">Bulles, petits fours et séance photos dans les jardins</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-time">19h30</div>
+          <div class="timeline-event">Dîner de gala</div>
+          <div class="timeline-desc">Dîner assis dans la salle de réception du château, discours et surprises</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-time">22h30</div>
+          <div class="timeline-event">Ouverture du bal & soirée</div>
+          <div class="timeline-desc">Première danse, DJ et piste de danse jusqu'au bout de la nuit</div>
+        </div>
+        <div class="timeline-item" style="padding-bottom:0">
+          <div class="timeline-dot"></div>
+          <div class="timeline-time">01h00 — 03h00</div>
+          <div class="timeline-event">Navettes retour</div>
+          <div class="timeline-desc">Deux départs navette vers la gare de Moret – Veneux-les-Sablons</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section id="menu" class="page">
+  <div class="page-inner">
+    <p class="section-label">Gastronomie</p>
+    <h2 class="section-title">Le menu<br><em style="font-style:italic;color:var(--accent)">du soir</em></h2>
+    <div class="section-divider"></div>
+    <div class="menu-grid">
+      <div class="menu-course">
+        <div class="menu-course-label">Entrées</div>
+        <div class="menu-item">
+          <div class="menu-item-name">Velouté de petits pois à la menthe</div>
+          <div class="menu-item-desc">Espuma de chèvre frais, croûtons dorés au beurre</div>
+        </div>
+        <div class="menu-item">
+          <div class="menu-item-name">Carpaccio de Saint-Jacques</div>
+          <div class="menu-item-desc">Huile de noisette, fleur de sel, vinaigrette agrumes</div>
+        </div>
+        <div class="menu-item">
+          <div class="menu-item-name">Terrine de foie gras maison</div>
+          <div class="menu-item-desc">Chutney de figues, pain brioché toasté</div>
+        </div>
+      </div>
+      <div class="menu-course">
+        <div class="menu-course-label">Plats</div>
+        <div class="menu-item">
+          <div class="menu-item-name">Filet de bœuf Rossini</div>
+          <div class="menu-item-desc">Sauce Périgueux, gratin dauphinois, haricots verts</div>
+        </div>
+        <div class="menu-item">
+          <div class="menu-item-name">Suprême de volaille de Bresse</div>
+          <div class="menu-item-desc">Jus de carcasse, écrasé de pomme de terre truffé</div>
+        </div>
+        <div class="menu-item">
+          <div class="menu-item-name">Option végétarienne</div>
+          <div class="menu-item-desc">Risotto aux cèpes et parmesan, copeaux de truffe d'été</div>
+        </div>
+      </div>
+      <div class="menu-course">
+        <div class="menu-course-label">Fromages & Desserts</div>
+        <div class="menu-item">
+          <div class="menu-item-name">Plateau de fromages affinés</div>
+          <div class="menu-item-desc">Sélection de fromages d'exception, pain aux noix et raisins</div>
+        </div>
+        <div class="menu-item">
+          <div class="menu-item-name">Pré-dessert</div>
+          <div class="menu-item-desc">Sorbet citron-basilic, tuile dentelle</div>
+        </div>
+        <div class="menu-item">
+          <div class="menu-item-name">Pièce montée & desserts</div>
+          <div class="menu-item-desc">Croquembouche maison, mignardises et chocolats fins</div>
+        </div>
+      </div>
+      <div class="menu-course">
+        <div class="menu-course-label">Vin d'honneur</div>
+        <div class="menu-item">
+          <div class="menu-item-name">Petits fours salés</div>
+          <div class="menu-item-desc">Mini-tarts, verrines, amuse-bouches de saison</div>
+        </div>
+        <div class="menu-item">
+          <div class="menu-item-name">Cocktails signature</div>
+          <div class="menu-item-desc">« Le Marine » et « L'Antonin », créations exclusives du soir</div>
+        </div>
+      </div>
+      <div class="menu-wine">
+        <div class="menu-wine-title">Accord mets & vins</div>
+        <div class="wine-list">
+          <div class="wine-item">
+            <div class="wine-name">Champagne Blanc de Blancs</div>
+            <div class="wine-desc">Vin d'honneur & toast</div>
+          </div>
+          <div class="wine-item">
+            <div class="wine-name">Sancerre 2023</div>
+            <div class="wine-desc">Entrées</div>
+          </div>
+          <div class="wine-item">
+            <div class="wine-name">Saint-Émilion Grand Cru 2019</div>
+            <div class="wine-desc">Plats principaux</div>
+          </div>
+          <div class="wine-item">
+            <div class="wine-name">Sauternes 2020</div>
+            <div class="wine-desc">Fromages & desserts</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- FOOTER -->
 <footer>
-    <p>On a hâte de vous voir ❤️</p>
+  <div class="footer-names">Marine & Antonin</div>
+  <p>26 Juin 2027 · Domaine de Berville · La Genevraye</p>
+  <p style="margin-top:1.5rem;font-size:0.6rem;">Pour toute question · marine.antonin2027@gmail.com</p>
 </footer>
 
 <script src="script.js"></script>
-
 </body>
 </html>
