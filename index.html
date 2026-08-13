@@ -3,30 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }</script>
 <title>Marine & Antonin — 26 Juin 2027</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥖</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap">
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@400,600,700&display=swap">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <!-- NAV -->
 <nav>
-  <div class="nav-brand">Marine & Antonin</div>
+  <a class="nav-brand" href="#photo">Mariage Marine &amp; Antonin</a>
   <ul class="nav-links">
-    <li><a href="#accueil">Accueil</a></li>
+    <li><a href="#rsvp">RSVP</a></li>
     <li><a href="#infos">Le Jour J</a></li>
     <li><a href="#hebergements">Hébergements</a></li>
     <li><a href="#acces">Accès</a></li>
     <li><a href="#programme">Programme</a></li>
-    <li><a href="#menu">Menu</a></li>
+    <li><a href="#cagnotte">Cagnotte</a></li>
   </ul>
+  <button class="nav-burger" onclick="toggleNav()" aria-label="Menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
 </nav>
+
+<!-- BANNIÈRE PHOTO -->
+<section id="photo" class="banner-section">
+  <div class="banner-wrap">
+    <img class="banner-photo" src="assets/banniere.jpg" alt="Marine & Antonin"
+      onerror="this.closest('section').style.display='none'">
+    <p class="banner-caption">Mariage Marine &amp; Antonin - 26.06.2027</p>
+  </div>
+</section>
 
 <!-- HERO / ACCUEIL -->
 <section id="accueil" class="page" style="min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:6rem 2rem 4rem; background:var(--white);">
   <div class="hero-bg"></div>
-  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;">
-    <div class="hero-line"></div>
+  <div id="hero-content" style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;">
+    <svg class="hero-zigzag" viewBox="0 0 140 16" width="140" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M0,8 Q8.75,0 17.5,8 T35,8 T52.5,8 T70,8 T87.5,8 T105,8 T122.5,8 T140,8" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
+    </svg>
     <p class="hero-eyebrow">Nous nous marions</p>
     <h1 class="hero-names">
       Marine
@@ -51,36 +71,58 @@
         <div class="countdown-num" id="cd-m">—</div>
         <div class="countdown-label">Minutes</div>
       </div>
+      <div class="countdown-sep">·</div>
+      <div class="countdown-item">
+        <div class="countdown-num" id="cd-s">—</div>
+        <div class="countdown-label">Secondes</div>
+      </div>
     </div>
 
-    <!-- RSVP -->
+  </div>
+</section>
+
+<!-- RSVP -->
+<section id="rsvp" class="page">
+  <div class="page-inner">
+    <p class="section-label">Formulaire</p>
+    <h2 class="section-title">Confirmer votre<br><em style="font-style:normal;color:var(--accent)">présence</em></h2>
+    <div class="section-divider"></div>
+    <p id="rsvpIntro" class="section-intro">
+      Merci de confirmer votre présence avant le <strong>1er Novembre 2026</strong>. Indiquez également vos éventuelles restrictions alimentaires afin que nous puissions adapter le menu.
+    </p>
     <div class="rsvp-section">
-      <p class="rsvp-title">Confirmer votre présence</p>
       <div class="rsvp-form" id="rsvpForm">
         <div class="rsvp-row">
           <input class="rsvp-input" type="text" id="rsvp-prenom" placeholder="Prénom">
           <input class="rsvp-input" type="text" id="rsvp-nom" placeholder="Nom">
         </div>
         <input class="rsvp-input" type="email" id="rsvp-email" placeholder="Adresse e-mail">
-        <div class="rsvp-row">
-          <select class="rsvp-select" id="rsvp-presence" style="flex:1">
-            <option value="">Présence</option>
-            <option value="oui">✓ Je serai présent(e)</option>
-            <option value="non">✗ Je ne pourrai pas venir</option>
-          </select>
-          <select class="rsvp-select" id="rsvp-repas" style="flex:1">
-            <option value="">Régime alimentaire</option>
+        <div class="presence-switch">
+          <button type="button" class="switch-opt switch-opt--active" onclick="setPresence('oui', this)">Je serai présent(e)</button>
+          <button type="button" class="switch-opt" onclick="setPresence('non', this)">Je ne pourrai pas venir</button>
+        </div>
+        <input type="hidden" id="rsvp-presence" value="oui">
+        <div id="rsvp-repas-block">
+          <select class="rsvp-select" id="rsvp-repas" required>
+            <option value="" disabled selected hidden>Régime alimentaire</option>
             <option value="aucun">Aucune restriction</option>
             <option value="vegetarien">Végétarien</option>
-            <option value="vegan">Vegan</option>
-            <option value="sans-gluten">Sans gluten</option>
-            <option value="autre">Autre allergie</option>
+            <option value="autre">Autre allergie ou restriction</option>
           </select>
+          <input class="rsvp-input" type="text" id="rsvp-autre" maxlength="200"
+            placeholder="Précisez votre allergie ou restriction (200 car. max)"
+            style="display:none; margin-top: 1rem;">
         </div>
-        <button class="rsvp-btn" onclick="submitRSVP()">Confirmer ma présence</button>
+        <button class="rsvp-btn" onclick="submitRSVP()">Confirmer</button>
       </div>
       <div class="rsvp-success" id="rsvpSuccess">
-        Merci — nous avons bien reçu votre réponse. À très bientôt ! 🤍
+        <div class="rsvp-success-check">✓</div>
+        <p class="rsvp-success-label">Confirmation reçue</p>
+        <p class="rsvp-success-msg" id="rsvpSuccessMsg"></p>
+        <div class="rsvp-success-actions">
+          <button class="rsvp-btn" onclick="resetRSVP()">Confirmer une autre personne</button>
+          <a class="rsvp-success-back" href="#accueil">Retour au site</a>
+        </div>
       </div>
     </div>
   </div>
@@ -90,27 +132,19 @@
 <section id="infos" class="page">
   <div class="page-inner">
     <p class="section-label">Le Jour J</p>
-    <h2 class="section-title">Informations<br><em style="font-style:italic;color:var(--accent)">essentielles</em></h2>
+    <h2 class="section-title">Informations<br><em style="font-style:normal;color:var(--accent)">essentielles</em></h2>
     <div class="section-divider"></div>
     <div class="info-grid">
-      <!-- PHOTO EN PREMIER -->
-      <div class="info-card" style="grid-column:1/-1; padding:0; overflow:hidden;">
-        <div id="photoZone" onclick="document.getElementById('photoInput').click()"
-          style="width:100%; min-height:380px; background:var(--gray-light); display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; position:relative; transition:background 0.2s;">
-          <img id="photoPreview" src="" alt="" style="display:none; width:100%; height:380px; object-fit:cover; object-position:center;">
-          <div id="photoPlaceholder" style="display:flex;flex-direction:column;align-items:center;gap:1rem;padding:3rem;">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--gray-mid)" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-            <div style="font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gray-mid);">Ajouter une photo</div>
-            <div style="font-size:0.75rem;color:var(--gray-mid);">Cliquez pour choisir une photo de vous deux</div>
-          </div>
-          <div id="photoRemove" onclick="removePhoto(event)" style="display:none; position:absolute; top:1rem; right:1rem; background:rgba(0,0,0,0.5); color:white; border:none; font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; padding:0.4rem 0.8rem; cursor:pointer;">✕ Retirer</div>
-        </div>
-        <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="loadPhoto(event)">
-      </div>
       <div class="info-card">
         <div class="info-card-label">Date</div>
         <div class="info-card-value">Samedi 26 Juin 2027</div>
-        <div class="info-card-sub">Cérémonie à 15h00</div>
+        <div class="info-card-sub">Cérémonie à 14h00</div>
+        <div class="agenda-links">
+          <a class="agenda-btn"
+            href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Mariage+Marine+%26+Antonin&dates=20270626T120000Z%2F20270627T000000Z&details=C%C3%A9r%C3%A9monie+%C3%A0+14h00+au+Domaine+de+Berville&location=17+Rte+de+Moret%2C+77690+La+Genevraye"
+            target="_blank" rel="noopener">Google Calendar</a>
+          <button class="agenda-btn" onclick="downloadICS()">Apple · Outlook</button>
+        </div>
       </div>
       <div class="info-card">
         <div class="info-card-label">Lieu de la cérémonie</div>
@@ -120,11 +154,11 @@
       <div class="info-card">
         <div class="info-card-label">Tenue souhaitée</div>
         <div class="info-card-value">Tenue habillée de rigueur</div>
-        <div class="info-card-sub">Costume ou smoking pour les hommes, robe ou tailleur pour les femmes. Le blanc est réservé à la mariée.</div>
+        <div class="info-card-sub">Costume ou smoking pour les hommes, robe ou tailleur pour les femmes. Une touche de couleur est la bienvenue pour qui le souhaite. Le blanc est réservé à la mariée.</div>
       </div>
       <div class="info-card">
         <div class="info-card-label">Confirmation de présence</div>
-        <div class="info-card-value">Avant le 1er Avril 2027</div>
+        <div class="info-card-value">Avant le 1er Novembre 2026</div>
         <div class="info-card-sub">Via le formulaire en haut de page ou par e-mail</div>
       </div>
     </div>
@@ -135,59 +169,14 @@
 <section id="hebergements" class="page">
   <div class="page-inner">
     <p class="section-label">Où dormir</p>
-    <h2 class="section-title">Hébergements<br><em style="font-style:italic;color:var(--accent)">à proximité</em></h2>
+    <h2 class="section-title">Hébergements<br><em style="font-style:normal;color:var(--accent)">à proximité</em></h2>
     <div class="section-divider"></div>
-    <p style="font-size:0.85rem;color:var(--gray-mid);margin-bottom:2.5rem;max-width:520px;">
+    <p class="section-intro">
       Nous avons sélectionné quelques établissements proches du domaine. Pensez à réserver rapidement, les disponibilités sont limitées en juin.
     </p>
-    <div class="hotels-list">
-      <div class="hotel-item">
-        <div class="hotel-info">
-          <div class="hotel-name">Château Les Glycines</div>
-          <div class="hotel-addr">12 Avenue du Château, 33000 Bordeaux</div>
-          <div class="hotel-stars">★★★★</div>
-        </div>
-        <div style="text-align:right">
-          <div class="hotel-dist">à 2,5 km du domaine</div>
-          <a href="#" style="font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--black);text-decoration:none;border-bottom:1px solid var(--accent);margin-top:0.5rem;display:inline-block;">Réserver →</a>
-        </div>
-      </div>
-      <div class="hotel-item">
-        <div class="hotel-info">
-          <div class="hotel-name">Hôtel du Domaine</div>
-          <div class="hotel-addr">8 Rue de la Vigne, 33240 Saint-André-de-Cubzac</div>
-          <div class="hotel-stars">★★★</div>
-        </div>
-        <div style="text-align:right">
-          <div class="hotel-dist">à 4 km du domaine</div>
-          <a href="#" style="font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--black);text-decoration:none;border-bottom:1px solid var(--accent);margin-top:0.5rem;display:inline-block;">Réserver →</a>
-        </div>
-      </div>
-      <div class="hotel-item">
-        <div class="hotel-info">
-          <div class="hotel-name">La Maison d'Hôtes du Bois</div>
-          <div class="hotel-addr">Route du Bois Fleuri, 33240 Cézac</div>
-          <div class="hotel-stars">★★★ · Chambre d'hôtes</div>
-        </div>
-        <div style="text-align:right">
-          <div class="hotel-dist">à 5,5 km du domaine</div>
-          <a href="#" style="font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--black);text-decoration:none;border-bottom:1px solid var(--accent);margin-top:0.5rem;display:inline-block;">Réserver →</a>
-        </div>
-      </div>
-      <div class="hotel-item">
-        <div class="hotel-info">
-          <div class="hotel-name">Ibis Styles Fontainebleau</div>
-          <div class="hotel-addr">Place de la République, 77300 Fontainebleau</div>
-          <div class="hotel-stars">★★ · Budget</div>
-        </div>
-        <div style="text-align:right">
-          <div class="hotel-dist">à 10 km du domaine</div>
-          <a href="#" style="font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--black);text-decoration:none;border-bottom:1px solid var(--accent);margin-top:0.5rem;display:inline-block;">Réserver →</a>
-        </div>
-      </div>
-    </div>
-    <p style="margin-top:1.5rem;font-size:0.75rem;color:var(--gray-mid);">
-      Un bus navette sera organisé depuis la gare de Moret – Veneux-les-Sablons · Retour prévu à 01h00 et 03h00
+    <div class="hotels-list" id="hotelsList"></div>
+    <p class="section-note">
+      Un bus navette sera organisé depuis la gare de Moret – Veneux-les-Sablons · Retour prévu à 00h00 et 02h00
     </p>
   </div>
 </section>
@@ -196,39 +185,40 @@
 <section id="acces" class="page">
   <div class="page-inner">
     <p class="section-label">Comment venir</p>
-    <h2 class="section-title">Accès au<br><em style="font-style:italic;color:var(--accent)">domaine</em></h2>
+    <h2 class="section-title">Accès au<br><em style="font-style:normal;color:var(--accent)">domaine</em></h2>
     <div class="section-divider"></div>
     <div class="acces-grid">
       <div class="acces-block">
         <div class="acces-block-title">🚗 En voiture</div>
         <ul class="acces-steps">
-          <li>Depuis Paris · A6 direction Lyon, sortie Fontainebleau (n°14), puis D606 direction Moret-sur-Loing</li>
-          <li>Depuis la N7, prendre la direction La Genevraye</li>
-          <li>Suivre « Route de Moret » — le domaine est au n°17, sur la gauche</li>
+          <li>Depuis Paris · A6, puis sortie N37 direction La Genevraye</li>
+          <li>Suivre « Route de Moret » — le domaine est au n°17, sur la gauche, à La Genevraye</li>
         </ul>
-        <p style="font-size:0.75rem;color:var(--gray-mid);margin-top:1rem;">Parking gratuit sur place · Environ 1h depuis Paris</p>
-      </div>
-      <div class="acces-block">
-        <div class="acces-block-title">🚆 En train & navette</div>
-        <ul class="acces-steps">
-          <li>Ligne R (Transilien) depuis Paris Gare de Lyon jusqu'à Moret – Veneux-les-Sablons</li>
-          <li>Durée : environ 55 min</li>
-          <li>Une navette sera organisée depuis la gare jusqu'au domaine</li>
-          <li>Retour navette prévu à 01h00 et 03h00</li>
-        </ul>
+        <p style="font-size:0.75rem;color:var(--gray-mid);margin-top:1rem;">Parking gratuit sur place · Environ 1h15 depuis Paris</p>
       </div>
     </div>
-    <div style="margin-top:3rem; border:1px solid var(--gray-light); overflow:hidden;">
-      <iframe
+    <div class="acces-map">
+      <iframe class="acces-map-iframe"
         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2645.0!2d2.789!3d48.376!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e58b6af5cb5abd%3A0x1140c9d62be02506!2sDomaine%20de%20Berville%2C%2017%20Rte%20de%20Moret%2C%2077690%20La%20Genevraye!5e0!3m2!1sfr!2sfr!4v1700000000000"
-        width="100%" height="300" style="border:0; display:block;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+        width="100%" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
       </iframe>
-      <div style="padding:1rem 1.5rem; background:var(--white); display:flex; justify-content:space-between; align-items:center;">
-        <span style="font-size:0.8rem;color:var(--gray-dark);">17 Rte de Moret, 77690 La Genevraye</span>
-        <a href="https://www.google.com/maps/place//data=!4m2!3m1!1s0x47e58b6af5cb5abd:0x1140c9d62be02506" target="_blank"
-          style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--black);text-decoration:none;border-bottom:1px solid var(--accent);padding-bottom:0.1rem;">
-          Ouvrir dans Maps →
-        </a>
+      <div style="padding:1rem 1.5rem; background:var(--white); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.8rem;">
+        <div style="display:flex; align-items:center; gap:0.6rem;">
+          <span style="font-size:0.8rem;color:var(--gray-dark);">17 Rte de Moret, 77690 La Genevraye</span>
+          <button class="footer-copy-btn" onclick="copyAddress(this)" title="Copier l'adresse">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+        </div>
+        <div style="display:flex; align-items:center; gap:1.2rem;">
+          <a href="https://www.google.com/maps/place//data=!4m2!3m1!1s0x47e58b6af5cb5abd:0x1140c9d62be02506" target="_blank" rel="noopener"
+            style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--black);text-decoration:none;border-bottom:1px solid var(--accent);padding-bottom:0.1rem;">
+            Ouvrir dans Maps →
+          </a>
+          <a href="https://waze.com/ul?q=17%20Route%20de%20Moret%2C%2077690%20La%20Genevraye&navigate=yes" target="_blank" rel="noopener"
+            style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--black);text-decoration:none;border-bottom:1px solid var(--accent);padding-bottom:0.1rem;">
+            Ouvrir dans Waze →
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -238,43 +228,43 @@
 <section id="programme" class="page">
   <div class="page-inner">
     <p class="section-label">Déroulé de la journée</p>
-    <h2 class="section-title">Programme<br><em style="font-style:italic;color:var(--accent)">du 26 juin</em></h2>
+    <h2 class="section-title">Programme<br><em style="font-style:normal;color:var(--accent)">du 26 juin</em></h2>
     <div class="section-divider"></div>
     <div style="max-width:520px;">
       <div class="timeline">
         <div class="timeline-item">
           <div class="timeline-dot"></div>
-          <div class="timeline-time">14h30</div>
+          <div class="timeline-time">13h30</div>
           <div class="timeline-event">Accueil des invités</div>
           <div class="timeline-desc">Arrivée au domaine, installation et cocktail d'accueil dans les jardins</div>
         </div>
         <div class="timeline-item">
           <div class="timeline-dot"></div>
-          <div class="timeline-time">15h00</div>
+          <div class="timeline-time">14h00</div>
           <div class="timeline-event">Cérémonie laïque</div>
           <div class="timeline-desc">Cérémonie en plein air dans le parc du domaine</div>
         </div>
         <div class="timeline-item">
           <div class="timeline-dot"></div>
-          <div class="timeline-time">16h00</div>
+          <div class="timeline-time">15h00</div>
           <div class="timeline-event">Vin d'honneur & cocktail</div>
           <div class="timeline-desc">Bulles, petits fours et séance photos dans les jardins</div>
         </div>
         <div class="timeline-item">
           <div class="timeline-dot"></div>
-          <div class="timeline-time">19h30</div>
+          <div class="timeline-time">18h30</div>
           <div class="timeline-event">Dîner de gala</div>
           <div class="timeline-desc">Dîner assis dans la salle de réception du château, discours et surprises</div>
         </div>
         <div class="timeline-item">
           <div class="timeline-dot"></div>
-          <div class="timeline-time">22h30</div>
+          <div class="timeline-time">21h30</div>
           <div class="timeline-event">Ouverture du bal & soirée</div>
           <div class="timeline-desc">Première danse, DJ et piste de danse jusqu'au bout de la nuit</div>
         </div>
         <div class="timeline-item" style="padding-bottom:0">
           <div class="timeline-dot"></div>
-          <div class="timeline-time">01h00 — 03h00</div>
+          <div class="timeline-time">00h00 — 02h00</div>
           <div class="timeline-event">Navettes retour</div>
           <div class="timeline-desc">Deux départs navette vers la gare de Moret – Veneux-les-Sablons</div>
         </div>
@@ -283,91 +273,17 @@
   </div>
 </section>
 
-<!-- MENU -->
-<section id="menu" class="page">
+<!-- CAGNOTTE -->
+<section id="cagnotte" class="page">
   <div class="page-inner">
-    <p class="section-label">Gastronomie</p>
-    <h2 class="section-title">Le menu<br><em style="font-style:italic;color:var(--accent)">du soir</em></h2>
+    <p class="section-label">Un geste</p>
+    <h2 class="section-title">Notre<br><em style="font-style:normal;color:var(--accent)">cagnotte</em></h2>
     <div class="section-divider"></div>
-    <div class="menu-grid">
-      <div class="menu-course">
-        <div class="menu-course-label">Entrées</div>
-        <div class="menu-item">
-          <div class="menu-item-name">Velouté de petits pois à la menthe</div>
-          <div class="menu-item-desc">Espuma de chèvre frais, croûtons dorés au beurre</div>
-        </div>
-        <div class="menu-item">
-          <div class="menu-item-name">Carpaccio de Saint-Jacques</div>
-          <div class="menu-item-desc">Huile de noisette, fleur de sel, vinaigrette agrumes</div>
-        </div>
-        <div class="menu-item">
-          <div class="menu-item-name">Terrine de foie gras maison</div>
-          <div class="menu-item-desc">Chutney de figues, pain brioché toasté</div>
-        </div>
-      </div>
-      <div class="menu-course">
-        <div class="menu-course-label">Plats</div>
-        <div class="menu-item">
-          <div class="menu-item-name">Filet de bœuf Rossini</div>
-          <div class="menu-item-desc">Sauce Périgueux, gratin dauphinois, haricots verts</div>
-        </div>
-        <div class="menu-item">
-          <div class="menu-item-name">Suprême de volaille de Bresse</div>
-          <div class="menu-item-desc">Jus de carcasse, écrasé de pomme de terre truffé</div>
-        </div>
-        <div class="menu-item">
-          <div class="menu-item-name">Option végétarienne</div>
-          <div class="menu-item-desc">Risotto aux cèpes et parmesan, copeaux de truffe d'été</div>
-        </div>
-      </div>
-      <div class="menu-course">
-        <div class="menu-course-label">Fromages & Desserts</div>
-        <div class="menu-item">
-          <div class="menu-item-name">Plateau de fromages affinés</div>
-          <div class="menu-item-desc">Sélection de fromages d'exception, pain aux noix et raisins</div>
-        </div>
-        <div class="menu-item">
-          <div class="menu-item-name">Pré-dessert</div>
-          <div class="menu-item-desc">Sorbet citron-basilic, tuile dentelle</div>
-        </div>
-        <div class="menu-item">
-          <div class="menu-item-name">Pièce montée & desserts</div>
-          <div class="menu-item-desc">Croquembouche maison, mignardises et chocolats fins</div>
-        </div>
-      </div>
-      <div class="menu-course">
-        <div class="menu-course-label">Vin d'honneur</div>
-        <div class="menu-item">
-          <div class="menu-item-name">Petits fours salés</div>
-          <div class="menu-item-desc">Mini-tarts, verrines, amuse-bouches de saison</div>
-        </div>
-        <div class="menu-item">
-          <div class="menu-item-name">Cocktails signature</div>
-          <div class="menu-item-desc">« Le Marine » et « L'Antonin », créations exclusives du soir</div>
-        </div>
-      </div>
-      <div class="menu-wine">
-        <div class="menu-wine-title">Accord mets & vins</div>
-        <div class="wine-list">
-          <div class="wine-item">
-            <div class="wine-name">Champagne Blanc de Blancs</div>
-            <div class="wine-desc">Vin d'honneur & toast</div>
-          </div>
-          <div class="wine-item">
-            <div class="wine-name">Sancerre 2023</div>
-            <div class="wine-desc">Entrées</div>
-          </div>
-          <div class="wine-item">
-            <div class="wine-name">Saint-Émilion Grand Cru 2019</div>
-            <div class="wine-desc">Plats principaux</div>
-          </div>
-          <div class="wine-item">
-            <div class="wine-name">Sauternes 2020</div>
-            <div class="wine-desc">Fromages & desserts</div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <p style="font-size:0.85rem;color:var(--gray-mid);margin-bottom:2.5rem;max-width:520px;">
+      Votre présence est le plus beau des cadeaux. Si vous souhaitez néanmoins participer à notre lune de miel, une cagnotte est à votre disposition.
+    </p>
+    <a id="cagnotte-link" class="rsvp-btn" href="#" target="_blank" rel="noopener" style="display:none;text-decoration:none;">Accéder à la cagnotte</a>
+    <p id="cagnotte-empty" style="font-size:0.8rem;color:var(--gray-mid);">La cagnotte sera bientôt disponible.</p>
   </div>
 </section>
 
@@ -375,8 +291,54 @@
 <footer>
   <div class="footer-names">Marine & Antonin</div>
   <p>26 Juin 2027 · Domaine de Berville · La Genevraye</p>
-  <p style="margin-top:1.5rem;font-size:0.6rem;">Pour toute question · marine.antonin2027@gmail.com</p>
+  <div class="footer-contact">
+    <span>Pour toute question ·</span>
+    <div class="mail-picker-wrap">
+      <button class="footer-mailto" onclick="toggleMailPicker(event)">marine.antonin2027@gmail.com</button>
+      <div class="mail-picker" id="mailPicker">
+        <p class="mail-picker-label">Écrire via</p>
+        <a class="mail-opt" href="mailto:marine.antonin2027@gmail.com?subject=Mariage%20Marine%20%26%20Antonin%20-%2026%20Juin%202027">Apple Mail</a>
+        <a class="mail-opt" href="https://mail.google.com/mail/?view=cm&to=marine.antonin2027@gmail.com&su=Mariage+Marine+%26+Antonin" target="_blank" rel="noopener">Gmail</a>
+        <a class="mail-opt" href="https://outlook.live.com/mail/0/deeplink/compose?to=marine.antonin2027@gmail.com&subject=Mariage+Marine+%26+Antonin" target="_blank" rel="noopener">Outlook</a>
+        <a class="mail-opt" href="https://compose.mail.yahoo.com/?to=marine.antonin2027@gmail.com&subject=Mariage+Marine+%26+Antonin" target="_blank" rel="noopener">Yahoo Mail</a>
+        <a class="mail-opt" href="https://mail.proton.me/u/0/inbox#mailto:marine.antonin2027@gmail.com" target="_blank" rel="noopener">Proton Mail</a>
+        <a class="mail-opt" href="https://www.laposte.net/courrier/compose?to=marine.antonin2027@gmail.com&subject=Mariage+Marine+%26+Antonin" target="_blank" rel="noopener">La Poste</a>
+      </div>
+    </div>
+    <button class="footer-copy-btn" onclick="copyEmail(this)" title="Copier l'adresse">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    </button>
+  </div>
+  <button id="game-trigger" onclick="openBaguetteGame()" title="Un petit jeu caché…">🥖</button>
 </footer>
+
+<!-- JEU BAGUETTE -->
+<div id="game-overlay">
+  <div class="game-header">
+    <p class="game-title">La Course des Mariés</p>
+    <p class="game-hint">Espace · ↑ · Cliquer pour sauter &nbsp;·&nbsp; Échap pour quitter</p>
+  </div>
+  <canvas id="game-canvas"></canvas>
+  <button class="game-close-btn" onclick="closeBaguetteGame()">✕ Fermer</button>
+
+  <!-- SCORES OVERLAY -->
+  <div id="game-scores">
+    <button class="scores-close" onclick="closeBaguetteGame()">✕ &nbsp;Fermer le jeu</button>
+    <div id="scores-entry" class="scores-panel">
+      <p class="scores-label">Votre score</p>
+      <p class="scores-number" id="scores-final-num">0</p>
+      <input class="scores-input" type="text" id="scores-name"
+        placeholder="Votre prénom" maxlength="20"
+        onkeydown="if(event.key==='Enter') submitScore()">
+      <button class="scores-btn" onclick="submitScore()">Enregistrer</button>
+    </div>
+    <div id="scores-board" class="scores-panel">
+      <p class="scores-board-title">Top 10</p>
+      <ol id="scores-list" class="scores-list"></ol>
+      <button class="scores-btn" onclick="restartFromScores()">Rejouer</button>
+    </div>
+  </div>
+</div>
 
 <script src="script.js"></script>
 </body>
