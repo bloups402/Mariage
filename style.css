@@ -1,11 +1,11 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --black: #1E1E1E;
+  --black: #141414;
   --white: #FCF0EA;
   --gray-light: #F6E4D8;
-  --gray-mid: #8F7862;
-  --gray-dark: #6B5140;
+  --gray-mid: #7A6552;
+  --gray-dark: #5A4331;
   --footer-bg: #603024;
   --accent: #EA5A4E;
   --accent-dark: #CC5448;
@@ -33,6 +33,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  user-select: none;
+}
+input, textarea, select {
+  user-select: text;
 }
 
 /* ── NAV ── */
@@ -53,6 +57,7 @@ nav {
   font-style: normal;
   text-decoration: none;
 }
+.nav-brand-amp { color: var(--accent); }
 .nav-links { display: flex; gap: 2.5rem; list-style: none; }
 .nav-links a {
   font-size: 0.7rem;
@@ -99,6 +104,7 @@ nav.nav-open .nav-burger span:nth-child(3) { transform: translateY(-6px) rotate(
   padding: 6rem 2rem 4rem;
   position: relative;
   overflow: hidden;
+  background: var(--white);
 }
 .hero-bg {
   position: absolute; inset: 0; z-index: 0;
@@ -167,6 +173,14 @@ nav.nav-open .nav-burger span:nth-child(3) { transform: translateY(-6px) rotate(
   color: var(--accent-dark); align-self: center;
   padding-bottom: 0.5rem;
 }
+.countdown-message {
+  display: none;
+  margin-top: 3.5rem;
+  font-family: var(--display);
+  font-size: 2.2rem; font-weight: 600;
+  color: var(--accent-dark);
+  animation: fadeUp 0.8s 1s both;
+}
 
 /* ── BANNIÈRE PHOTO ── */
 .banner-section {
@@ -174,9 +188,9 @@ nav.nav-open .nav-burger span:nth-child(3) { transform: translateY(-6px) rotate(
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
-  padding: 6rem 2rem 2rem;
+  padding: 5.5rem 2rem 1.25rem;
   background: var(--white);
   scroll-snap-align: start;
 }
@@ -185,28 +199,82 @@ nav.nav-open .nav-burger span:nth-child(3) { transform: translateY(-6px) rotate(
   flex-direction: column;
   align-items: center;
   max-width: 100%;
+  position: relative;
 }
-.banner-photo {
+.banner-illustration {
   display: block;
-  width: auto;
-  height: min(calc(100vh - 12rem), calc((100vw - 4rem) * 1.3873));
+  height: min(74vh, calc((100vw - 4rem) * 1.3873));
+  aspect-ratio: 855.18 / 1186.2653;
   max-width: 100%;
-  aspect-ratio: 2672 / 3707;
-  object-fit: cover;
   background: var(--gray-light);
+  transform-origin: center bottom;
+  cursor: none;
+  position: relative;
 }
-.banner-caption {
-  margin-top: 1.4rem;
-  text-align: center;
+/* Bords fondus dans le fond de la page (masque : le bord extrême est 100 % transparent, plus aucun liseré) */
+.banner-illustration {
+  --edge: 16px;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--edge), #000 calc(100% - var(--edge)), transparent 100%), linear-gradient(to bottom, transparent 0, #000 var(--edge), #000 calc(100% - var(--edge)), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 var(--edge), #000 calc(100% - var(--edge)), transparent 100%), linear-gradient(to bottom, transparent 0, #000 var(--edge), #000 calc(100% - var(--edge)), transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  clip-path: inset(2px);
+}
+.illu-zoom-lens {
+  position: absolute;
+  top: 0; left: 0;
+  width: 150px; height: 150px;
+  border-radius: 50%;
+  border: 3px solid var(--white, #fff);
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.15), 0 8px 24px rgba(0,0,0,0.35);
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--gray-light);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  z-index: 5;
+}
+.illu-zoom-lens.active { opacity: 1; }
+.illu-zoom-lens svg { display: block; width: 100%; height: 100%; }
+.illu-zoom-lens:not(.active) svg { display: none; }
+@media (max-width: 640px), (hover: none) {
+  .illu-zoom-lens { display: none; }
+  .banner-illustration { cursor: auto; }
+}
+body.illustration-ready .banner-illustration { background: transparent; }
+.banner-illustration svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* Le SVG compte ~2 000 chemins : sans ceci, chaque mouvement de souris les teste tous.
+   Seul le conteneur reçoit les clics (crédit) et les mouvements (loupe). */
+.banner-illustration svg * { pointer-events: none; }
+.banner-illustration { will-change: transform; }
+.banner-date {
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+  margin-top: 0.75rem;
+  height: 1.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  max-width: 320px;
   font-family: var(--display);
-  font-style: normal;
-  font-size: 1.5rem;
-  font-weight: 400;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--black);
+  font-size: 1.15rem; font-weight: 600; letter-spacing: 0.25em;
+  text-transform: uppercase; color: var(--accent-dark);
+  text-align: center;
+  transition: color 0.25s ease;
 }
-
+.banner-date--credit {
+  color: var(--black);
+  max-width: none;
+  white-space: nowrap;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+}
 /* ── RSVP ── */
 #rsvp {
   display: flex;
@@ -226,7 +294,7 @@ nav.nav-open .nav-burger span:nth-child(3) { transform: translateY(-6px) rotate(
 .rsvp-input {
   width: 100%; padding: 0.85rem 1.1rem;
   border: 1px solid var(--gray-light);
-  border-radius: 24px;
+  border-radius: 10px;
   background: white; font-family: var(--sans);
   font-size: 0.8rem; letter-spacing: 0.05em;
   color: var(--black); outline: none;
@@ -237,7 +305,7 @@ nav.nav-open .nav-burger span:nth-child(3) { transform: translateY(-6px) rotate(
 .rsvp-select {
   width: 100%; padding: 0.85rem 1.1rem;
   border: 1px solid var(--gray-light);
-  border-radius: 24px;
+  border-radius: 10px;
   background: white; font-family: var(--sans);
   font-size: 0.8rem; letter-spacing: 0.05em;
   color: var(--black); outline: none; cursor: pointer;
@@ -253,7 +321,7 @@ nav.nav-open .nav-burger span:nth-child(3) { transform: translateY(-6px) rotate(
 .rsvp-btn {
   padding: 0.9rem 2rem;
   background: var(--accent); color: var(--white);
-  border: none; border-radius: 24px;
+  border: none; border-radius: 10px;
   font-family: var(--sans);
   font-size: 0.65rem; letter-spacing: 0.25em;
   text-transform: uppercase; cursor: pointer;
@@ -281,7 +349,7 @@ nav.nav-open .nav-burger span:nth-child(3) { transform: translateY(-6px) rotate(
 .presence-switch {
   display: flex;
   background: var(--gray-light);
-  border-radius: 24px;
+  border-radius: 10px;
   padding: 3px;
   gap: 3px;
 }
@@ -289,7 +357,7 @@ nav.nav-open .nav-burger span:nth-child(3) { transform: translateY(-6px) rotate(
   flex: 1;
   padding: 0.85rem 1rem;
   border: none;
-  border-radius: 21px;
+  border-radius: 7px;
   background: transparent;
   font-family: var(--sans);
   font-size: 0.8rem;
@@ -344,15 +412,24 @@ nav.nav-open .nav-burger span:nth-child(3) { transform: translateY(-6px) rotate(
 /* ── PAGES ── */
 .page {
   min-height: 100vh; padding: 8rem 3rem 6rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   position: relative;
   scroll-snap-align: start;
+  /* Les sections hors écran ne sont ni peintes ni animées */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 100vh;
 }
+/* Pendant un saut de menu : mise en page stable, pas d'aimantation */
+html.nav-jump { scroll-snap-type: none; }
+html.nav-jump .page { content-visibility: visible; }
 .page:nth-child(even) { background: var(--gray-light); }
 .page-inner { max-width: 900px; margin: 0 auto; }
 
 .section-label {
-  font-size: 0.6rem; letter-spacing: 0.4em;
-  text-transform: uppercase; color: var(--accent);
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.28em;
+  text-transform: uppercase; color: var(--accent-dark);
   margin-bottom: 0.8rem;
 }
 .section-title {
@@ -378,6 +455,11 @@ nav.nav-open .nav-burger span:nth-child(3) { transform: translateY(-6px) rotate(
 .info-grid {
   display: grid; grid-template-columns: 1fr 1fr;
   gap: 2px; background: var(--gray-light);
+}
+@media (min-width: 681px) {
+  .info-grid--3 { grid-template-columns: repeat(3, 1fr); }
+  .info-grid--3 .info-card { padding: 2.5rem 1rem; text-align: center; }
+  .info-grid--3 .info-card-value { font-size: clamp(0.72rem, 1.8vw, 1.1rem); white-space: nowrap; }
 }
 .info-card {
   background: var(--white); padding: 2.5rem 2rem;
@@ -412,23 +494,36 @@ nav.nav-open .nav-burger span:nth-child(3) { transform: translateY(-6px) rotate(
 .agenda-btn:hover { border-color: var(--accent); color: var(--accent); }
 
 /* ── HÉBERGEMENTS ── */
-.hotels-list { display: flex; flex-direction: column; gap: 1px; background: #ddd; }
-.hotel-item {
-  background: var(--white); padding: 2rem 2.5rem;
-  display: flex; justify-content: space-between; align-items: flex-start;
-  gap: 2rem;
+.booking-links {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem;
+  max-width: 820px;
 }
-.hotel-name {
-  font-family: var(--display); font-size: 1.2rem;
-  font-weight: 600; margin-bottom: 0.3rem;
+@media (max-width: 900px) {
+  .booking-links { grid-template-columns: repeat(2, 1fr); max-width: 420px; }
 }
-.hotel-addr { font-size: 0.8rem; color: var(--gray-mid); }
-.hotel-dist {
-  font-size: 0.65rem; letter-spacing: 0.2em;
-  text-transform: uppercase; color: var(--accent);
-  white-space: nowrap; padding-top: 0.4rem;
+.booking-card {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 1rem; padding: 2.2rem 1.2rem;
+  background: var(--white); border: 1px solid var(--gray-light);
+  border-radius: 18px; text-decoration: none; color: inherit;
+  text-align: center;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
-.hotel-stars { color: var(--accent); font-size: 0.8rem; margin-top: 0.2rem; }
+.booking-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px rgba(107, 81, 64, 0.12);
+  border-color: var(--accent-light);
+}
+.booking-card-icon {
+  display: flex; align-items: center; justify-content: center;
+  width: 56px; height: 56px; border-radius: 50%;
+  background: var(--gray-light); color: var(--accent-dark);
+}
+.booking-card-icon svg { width: 26px; height: 26px; }
+.booking-card-name {
+  font-family: var(--display); font-size: 1rem;
+  font-weight: 600; color: var(--black);
+}
 
 /* ── ACCÈS ── */
 .acces-grid { display: grid; grid-template-columns: 1fr; max-width: 760px; gap: 3rem; }
@@ -454,7 +549,7 @@ nav.nav-open .nav-burger span:nth-child(3) { transform: translateY(-6px) rotate(
   color: var(--accent);
 }
 .acces-map { margin-top: 3rem; border: 1px solid var(--gray-light); overflow: hidden; }
-.acces-map-iframe { height: 300px; border: 0; display: block; }
+.acces-map-iframe { height: 440px; border: 0; display: block; }
 
 /* ── PROGRAMME ── */
 .timeline { position: relative; padding-left: 3rem; }
@@ -466,21 +561,28 @@ nav.nav-open .nav-burger span:nth-child(3) { transform: translateY(-6px) rotate(
 .timeline-item {
   position: relative; padding: 0 0 2.2rem 2.5rem;
 }
+.timeline-head {
+  position: relative;
+  display: flex; align-items: center; flex-wrap: wrap;
+  column-gap: 0.8rem; margin-bottom: 0.3rem;
+}
 .timeline-dot {
-  position: absolute; left: -2.45rem; top: 0.35rem;
+  position: absolute; left: -2.45rem; top: 50%;
+  transform: translateY(-50%);
   width: 10px; height: 10px;
   background: var(--white);
   border: 1px solid var(--accent);
   border-radius: 50%;
 }
 .timeline-time {
-  font-size: 0.6rem; letter-spacing: 0.3em;
+  font-size: 0.72rem; letter-spacing: 0.14em;
   text-transform: uppercase; color: var(--accent);
-  margin-bottom: 0.3rem;
+  font-weight: 600;
+  flex-shrink: 0;
 }
 .timeline-event {
-  font-family: var(--display); font-size: 1.1rem;
-  font-weight: 600; margin-bottom: 0.3rem;
+  font-family: var(--display); font-size: 1.05rem;
+  font-weight: 600;
 }
 .timeline-desc { font-size: 0.82rem; color: var(--gray-mid); }
 
@@ -493,111 +595,49 @@ nav.nav-open .nav-burger span:nth-child(3) { transform: translateY(-6px) rotate(
 }
 #game-trigger:hover { opacity: 1; }
 
+/* Même DA que les autres jeux : ciel rose, Fuji, nuages, pétales (voir .neko-*) */
 #game-overlay {
   display: none; position: fixed; inset: 0; z-index: 500;
-  background: rgba(30,30,30,0.96);
-  flex-direction: column; align-items: center; justify-content: center;
-  gap: 1.2rem;
+  background: linear-gradient(180deg, #F2A5C8 0%, #F9D1E4 48%, #FCEDE4 100%);
+  overflow: hidden;
+  user-select: none;
 }
-#game-overlay.active { display: flex; }
-.game-header { text-align: center; }
-.game-title {
-  font-family: var(--serif); font-style: italic; font-size: 1.3rem;
-  color: var(--white); margin-bottom: 0.4rem; font-weight: 300;
-}
-.game-hint {
-  font-size: 0.58rem; letter-spacing: 0.2em;
-  text-transform: uppercase; color: #6a6a68;
-}
-#game-canvas {
-  border: 1px solid rgba(234,90,78,0.25);
-  max-width: calc(100vw - 32px);
-}
-/* Scores overlay */
+#game-overlay.active { display: block; }
+/* Mobile en portrait : l'overlay est pivoté de 90° (dimensions et transform posés en JS) */
+#game-overlay.rotated { inset: auto; top: 0; left: 0; transform-origin: 0 0; }
+#game-overlay.rotated .neko-fuji { width: min(80vh, 920px); }
+#game-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* Écran de fin */
 #game-scores {
   display: none;
   position: absolute; inset: 0;
-  background: rgba(30,30,30,0.94);
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 4rem;
-  flex-wrap: wrap;
-  padding: 2rem;
+  align-items: center; justify-content: center;
+  background: rgba(252, 240, 234, 0.85); backdrop-filter: blur(4px);
+  text-align: center;
 }
 #game-scores.active { display: flex; }
-.scores-panel { text-align: center; min-width: 180px; }
+.scores-panel { display: flex; flex-direction: column; align-items: center; gap: 0.7rem; }
 .scores-label {
-  font-size: 0.58rem; letter-spacing: 0.3em;
-  text-transform: uppercase; color: #6a6a68; margin-bottom: 0.4rem;
+  font-size: 0.85rem; color: var(--gray-dark); margin-bottom: 0;
 }
 .scores-number {
-  font-family: var(--serif); font-style: italic; font-size: 3.5rem;
-  font-weight: 300; color: var(--accent); line-height: 1; margin-bottom: 1.2rem;
+  font-family: var(--display); font-size: 3rem; font-weight: 700;
+  color: #7C2D4A; line-height: 1; margin-bottom: 0.8rem;
 }
-.scores-board-title {
-  font-family: var(--serif); font-style: italic; font-size: 1.3rem;
-  font-weight: 300; color: var(--white); margin-bottom: 1rem;
-}
-.scores-input {
-  width: 100%; padding: 0.7rem 1rem;
-  border: 1px solid rgba(234,90,78,0.4); border-radius: 24px;
-  background: rgba(255,255,255,0.06); color: var(--white);
-  font-family: var(--sans); font-size: 0.85rem;
-  text-align: center; outline: none; margin-bottom: 0.8rem;
-  transition: border-color 0.2s;
-}
-.scores-input:focus { border-color: var(--accent); }
-.scores-input::placeholder { color: #6a6a68; }
-.scores-btn {
-  font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
-  color: var(--white); background: rgba(234,90,78,0.15);
-  border: 1px solid rgba(234,90,78,0.5); border-radius: 24px;
-  padding: 0.6rem 1.6rem; cursor: pointer; font-family: var(--sans);
-  transition: background 0.2s, border-color 0.2s;
-}
-.scores-btn:hover { background: rgba(234,90,78,0.3); border-color: var(--accent); }
-.scores-list {
-  list-style: none; text-align: left; width: 100%;
-}
-.scores-list li {
-  display: flex; align-items: center; gap: 0.8rem;
-  padding: 0.45rem 0.6rem; border-bottom: 1px solid rgba(255,255,255,0.06);
-  font-size: 0.82rem; color: #b0afa9;
-}
-.scores-list li.scores-highlight { color: var(--accent); font-weight: 500; }
-.scores-close {
-  position: absolute; top: 1rem; right: 1.2rem;
-  background: none; border: 1px solid rgba(255,255,255,0.25);
-  border-radius: 24px; color: var(--white);
-  font-family: var(--sans); font-size: 0.65rem;
-  letter-spacing: 0.18em; text-transform: uppercase;
-  padding: 0.5rem 1.2rem; cursor: pointer;
-  transition: border-color 0.2s, color 0.2s, background 0.2s;
-}
-.scores-close:hover { border-color: var(--accent); color: var(--accent); background: rgba(234,90,78,0.08); }
-.scores-rank {
-  font-family: var(--serif); font-size: 0.75rem;
-  color: #6a6a68; width: 18px; text-align: right; flex-shrink: 0;
-}
-.scores-highlight .scores-rank { color: var(--accent); }
-.scores-name-col { flex: 1; }
-.scores-score-col { font-family: var(--serif); font-size: 0.9rem; }
-
 .game-close-btn {
-  font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
-  color: #6a6a68; background: none;
-  border: 1px solid rgba(106,106,104,0.35); border-radius: 20px;
-  padding: 0.5rem 1.5rem; cursor: pointer; font-family: var(--sans);
-  transition: color 0.2s, border-color 0.2s;
+  position: absolute; bottom: 1.3rem; right: 1.6rem;
+  background: none; border: 1px solid rgba(30,30,30,0.4); color: #1e1e1e;
+  font-family: var(--sans); font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase;
+  padding: 0.5rem 0.9rem; border-radius: 999px; cursor: pointer;
 }
-.game-close-btn:hover { color: var(--accent); border-color: var(--accent); }
+.game-close-btn:hover { background: rgba(30,30,30,0.08); }
 
 /* ── FOOTER ── */
 footer {
   background: linear-gradient(270deg, #FCF0EA 0%, #FCD2E4 50%, #FCF0EA 100%);
   color: var(--black);
   text-align: center; padding: 3rem;
+  scroll-snap-align: start;
 }
 footer .footer-names {
   font-family: var(--display); font-size: 1.5rem;
@@ -707,16 +747,16 @@ footer p {
   .countdown-sep { font-size: 1.6rem; }
   .countdown-label { font-size: 0.52rem; }
   .rsvp-row { flex-direction: column; }
-  .hotel-item { flex-direction: column; }
-  .banner-section { padding: 5rem 1.5rem 1.5rem; }
-  .banner-photo { height: min(calc(100vh - 9rem), calc((100vw - 2rem) * 1.3873)); }
-  .banner-caption { font-size: 1.1rem; letter-spacing: 0.14em; margin-top: 1rem; }
+  /* Mobile : la bannière occupe un écran entier (le héros / compte à rebours vient sur l'écran suivant) */
+  .banner-section { min-height: 100vh; min-height: 100svh; justify-content: center; padding: 4.75rem 0.5rem 0.75rem; }
+  .banner-illustration { height: min(calc(100vh - 8.5rem), calc((100vw - 1rem) * 1.3873)); height: min(calc(100svh - 8.5rem), calc((100vw - 1rem) * 1.3873)); }
 }
 
-/* Sections dont le contenu peut dépasser 100vh sur écrans courts (ex: 1080p) :
+/* Sections dont le contenu peut dépasser 100vh sur écrans courts (ex: 1080p plein écran
+   sans chrome navigateur, ou fenêtre 1440px de large) :
    on resserre le padding vertical fixe pour rester au plus près d'un écran plein,
    sans jamais tronquer le contenu (les listes non bornées, ex: hébergements, restent libres). */
-@media (max-height: 900px) {
+@media (max-height: 1100px) {
   .page { padding-top: 6rem; padding-bottom: 4rem; }
   .section-title { margin-bottom: 1.5rem; }
   .section-divider { margin-bottom: 1.5rem; }
@@ -741,22 +781,18 @@ footer p {
   .rsvp-btn { padding: 0.7rem 2rem; }
 
   /* Hébergements */
-  .hotel-item { padding: 0.3rem 1.5rem; }
-  .hotel-name { margin-bottom: 0.1rem; line-height: 1.25; }
-  .hotel-addr, .hotel-stars { line-height: 1.25; }
-  .hotel-stars { margin-top: 0; }
+  .booking-card { padding: 1.6rem 1rem; gap: 0.7rem; }
+  .booking-card-icon { width: 46px; height: 46px; }
+  .booking-card-icon svg { width: 22px; height: 22px; }
 
   /* Accès */
   .acces-steps li { padding: 0.25rem 0 0.25rem 2.5rem; }
   .acces-block-title { margin-bottom: 0.4rem; }
   .acces-map { margin-top: 0.8rem; }
-  .acces-map-iframe { height: 100px; }
+  .acces-map-iframe { height: 280px; }
 
   /* Programme */
-  .timeline-item { padding-bottom: 0.15rem; }
-  .timeline-time { margin-bottom: 0.05rem; font-size: 0.55rem; }
-  .timeline-event { font-size: 1rem; margin-bottom: 0.05rem; }
-  .timeline-desc { line-height: 1.35; font-size: 0.72rem; }
+  .timeline-item { padding-bottom: 1.1rem; }
 }
 
 /* Mobile : les colonnes passent en 1 seule (grilles/hôtels empilés), donc plus hautes
@@ -772,50 +808,519 @@ footer p {
   .info-card-value { font-size: 1.15rem; }
   .info-card-sub { margin-top: 0.2rem; }
 
-  .hotel-item { padding: 0.25rem 1.2rem; gap: 0.15rem; }
-  .hotel-name { font-size: 1.1rem; }
-  .hotel-addr, .hotel-stars { font-size: 0.72rem; }
-  .hotel-dist { padding-top: 0; font-size: 0.6rem; }
-  .hotel-item a { margin-top: 0.2rem !important; }
+  .booking-links { grid-template-columns: 1fr; max-width: 320px; margin: 0 auto; }
+  .booking-card { flex-direction: row; justify-content: flex-start; text-align: left; padding: 1rem 1.4rem; gap: 1rem; }
 
-  .acces-map-iframe { height: 150px; }
+  .acces-map-iframe { height: 260px; }
   .acces-steps li { padding: 0.4rem 0 0.4rem 2.2rem; }
 
-  .timeline-item { padding-bottom: 0.5rem; }
-  .timeline-event { font-size: 1rem; }
+  .timeline-item { padding-bottom: 0.9rem; }
 }
 
 /* Téléphones avec barre d'adresse visible (viewport réel plus court que la valeur
    déclarée) : encore un cran de resserrement au-delà du bloc mobile ci-dessus. */
 @media (max-height: 720px) and (max-width: 680px) {
-  .page { padding-top: 4rem; padding-bottom: 1.2rem; }
-  .section-title { margin-bottom: 0.8rem; font-size: 1.9rem; }
-  .section-divider { margin-bottom: 0.8rem; }
+  .page { padding-top: 3.2rem; padding-bottom: 0.8rem; }
+  .section-title { margin-bottom: 0.5rem; font-size: 1.6rem; }
+  .section-divider { margin-bottom: 0.5rem; }
   .section-label { margin-bottom: 0.3rem; }
-  .section-intro { margin-bottom: 0.4rem; font-size: 0.78rem; }
+  .section-intro { margin-bottom: 0.4rem; font-size: 0.75rem; line-height: 1.4; }
 
   .rsvp-form { gap: 0.5rem; }
   .rsvp-input, .rsvp-select { padding: 0.55rem 1rem; }
   .switch-opt { padding: 0.55rem 0.9rem; }
   .rsvp-btn { padding: 0.6rem 2rem; }
 
-  .info-card { padding: 0.6rem 1rem; }
-  .info-card-label { margin-bottom: 0.3rem; }
-  .info-card-value { font-size: 0.95rem; }
-  .info-card-sub { margin-top: 0.1rem; font-size: 0.7rem; }
+  .info-card { padding: 0.45rem 1rem; }
+  .info-card-label { margin-bottom: 0.15rem; }
+  .info-card-value { font-size: 0.95rem; line-height: 1.25; }
+  .info-card-sub { margin-top: 0.1rem; font-size: 0.68rem; line-height: 1.3; }
+  .agenda-links { margin-top: 0.4rem; }
 
-  .hotel-item { padding: 0.05rem 1rem; gap: 0.1rem; }
-  .hotel-name { font-size: 0.88rem; margin-bottom: 0; }
-  .hotel-addr, .hotel-stars { font-size: 0.62rem; }
-  .hotel-item a { margin-top: 0.05rem !important; }
-  .section-note { margin-top: 0.4rem; font-size: 0.65rem; }
+  .booking-card { padding: 0.7rem 1.1rem; gap: 0.8rem; }
+  .booking-card-icon { width: 36px; height: 36px; }
+  .booking-card-icon svg { width: 18px; height: 18px; }
+  .booking-card-name { font-size: 0.85rem; }
+  .section-note { margin-top: 0.4rem; font-size: 0.65rem; line-height: 1.35; }
 
-  .acces-map-iframe { height: 100px; }
+  .acces-map-iframe { height: 200px; }
   .acces-steps li { padding: 0.25rem 0 0.25rem 2rem; font-size: 0.78rem; }
   .acces-block-title { font-size: 1rem; margin-bottom: 0.3rem; }
 
-  .timeline-item { padding-bottom: 0.25rem; }
-  .timeline-event { font-size: 0.9rem; }
-  .timeline-time { font-size: 0.55rem; }
-  .timeline-desc { font-size: 0.72rem; }
+  .timeline-item { padding-bottom: 0.55rem; }
+  .timeline-event { font-size: 0.92rem; }
+  .timeline-time { font-size: 0.66rem; }
+  .timeline-desc { font-size: 0.75rem; }
+}
+
+/* ── ILLUSTRATION ANIMÉE (bannière) ──
+   Les groupes animés sont enveloppés par script.js dans des <g class="illu-anim">.
+   Le repère du SVG source est inversé verticalement (matrice -1.333 sur Y) :
+   translateY positif = vers le HAUT à l'écran, et le pivot "bas à l'écran"
+   correspond à l'origine 50% 0% de la fill-box. */
+.illu-anim {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.anim-sun { animation: illuSunFloat 9s ease-in-out infinite; }
+.anim-cloud-big { animation: illuCloudDrift 9s ease-in-out infinite alternate; }
+.anim-cloud-small { animation: illuCloudDriftSm 7s ease-in-out infinite alternate-reverse; }
+/* Pivot au coude (bord gauche du bras), la main balaie les cordes */
+.anim-strum { transform-origin: 0% 50%; animation: illuStrum 0.55s ease-in-out infinite; }
+.anim-fret { animation: illuFret 1.7s ease-in-out infinite; }
+.anim-groove { animation: illuGroove 1.4s ease-in-out infinite; }
+/* Le train entre depuis l'arbre (clip en biais), s'arrête en gare
+   entre les deux immeubles, puis repart derrière le panneau 東京市.
+   Scopé à la bannière : la copie <use> de la section Programme reste fixe. */
+.banner-illustration .anim-train-run { animation: illuTrainRun 18s ease-in-out infinite; }
+.anim-bird { animation: illuBirdHop 3.4s ease-in-out infinite; }
+.anim-press { animation: illuPress 3.2s ease-in-out infinite; }
+.anim-maneki { transform-origin: 50% 0%; animation: illuManekiWiggle 2.8s ease-in-out infinite; }
+.anim-bike { transform-origin: 50% 0%; animation: illuBikeRock 2.6s ease-in-out infinite; }
+
+@keyframes illuSunFloat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(5px) scale(1.05); }
+}
+@keyframes illuCloudDrift {
+  from { transform: translateX(-14px); }
+  to   { transform: translateX(14px); }
+}
+@keyframes illuCloudDriftSm {
+  from { transform: translateX(-10px); }
+  to   { transform: translateX(10px); }
+}
+/* La guitariste : grattage rapide, main qui glisse sur le manche, tête en rythme */
+@keyframes illuStrum {
+  0%, 100% { transform: rotate(-4.5deg); }
+  50%      { transform: rotate(4deg); }
+}
+@keyframes illuFret {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(-2px); }
+}
+@keyframes illuGroove {
+  0%, 100% { transform: translateY(0); }
+  55%      { transform: translateY(-1.8px); }
+}
+@keyframes illuTrainRun {
+  0%        { transform: translateX(-180px); } /* rame cachée derrière l'arbre */
+  26%       { transform: translateX(0); }      /* entre en gare */
+  58%       { transform: translateX(0); }      /* à l'arrêt entre les immeubles */
+  86%, 100% { transform: translateX(259px); }  /* les 3 voitures sorties derrière le panneau */
+}
+@keyframes illuBirdHop {
+  0%, 55%, 100% { transform: translateY(0) rotate(0deg); }
+  70%           { transform: translateY(3px) rotate(2deg); }
+  85%           { transform: translateY(0.5px) rotate(0deg); }
+}
+/* Développé couché : barre + disques + poings + avant-bras + chat, en bloc.
+   Repère inversé : translateY négatif = descente à l'écran. */
+@keyframes illuPress {
+  0%       { transform: translateY(0); }
+  38%      { transform: translateY(-11px); }
+  50%      { transform: translateY(-11px); }
+  78%, 100% { transform: translateY(0); }
+}
+@keyframes illuManekiWiggle {
+  0%, 100% { transform: rotate(-2.5deg); }
+  50%      { transform: rotate(2.5deg); }
+}
+@keyframes illuBikeRock {
+  0%, 100% { transform: rotate(-1.2deg) translateY(0); }
+  50%      { transform: rotate(1.2deg) translateY(1.5px); }
+}
+
+/* ── DÉCORATIONS SVG le long du site ──
+   Chaque .deco réutilise un élément de l'illustration via <use href="#gXXXX">.
+   Les éléments "posés" (chat, maneki, train, vélo) ont une taille FIXE pour rester
+   alignés avec leur trait d'ancrage (.deco-line) ; les éléments flottants (nuages,
+   oiseaux, soleil) s'adaptent avec clamp(). */
+.deco {
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+body.illustration-ready .deco { opacity: 0.85; }
+/* Les figures posées au sol sont pleinement opaques (on ne voit pas au travers) ;
+   seuls les éléments d'ambiance (ciel, nuages, oiseaux) restent adoucis. */
+body.illustration-ready .deco-ride-acces,
+body.illustration-ready .deco-ride-programme,
+body.illustration-ready .deco-contacts-cat,
+body.illustration-ready .deco-cagnotte-maneki { opacity: 1; }
+
+/* Traits d'ancrage : sol, rail, perchoir, étagère */
+.deco-line { height: 1px; background: rgba(90, 67, 49, 0.3); }
+
+/* Accueil : le Mont Fuji en toile de fond, ciel animé autour du titre */
+.deco-hero-fuji { width: clamp(320px, 38vw, 520px); bottom: 5%; left: -3%; }
+body.illustration-ready .deco-hero-fuji { opacity: 0.3; }
+.deco-hero-sun { width: clamp(64px, 7vw, 88px); top: 17%; right: 14%; animation: decoFloat 8s ease-in-out infinite; }
+.deco-hero-cloud { width: clamp(120px, 13vw, 170px); top: 24%; left: 7%; animation: decoDrift 16s ease-in-out infinite alternate; }
+.deco-hero-cloud2 { width: clamp(56px, 6vw, 76px); bottom: 22%; right: 9%; animation: decoDrift 11s ease-in-out infinite alternate-reverse; }
+
+/* RSVP : les deux oiseaux messagers */
+.deco-rsvp-bird { width: clamp(90px, 10vw, 120px); top: 7.5rem; right: 9%; animation: decoFloat 6s ease-in-out infinite; }
+
+/* Infos : la lampe suspendue au plafond de la section */
+.deco-infos-lamp { top: 0; right: 15%; transform-origin: 50% 0; animation: decoSwing 5.5s ease-in-out infinite; }
+.deco-infos-lamp::before {
+  content: '';
+  display: block;
+  width: 1.5px; height: 8rem; /* le haut passe sous la nav fixe */
+  margin: 0 auto;
+  background: #1e1e1e;
+}
+.deco-infos-lamp svg { display: block; width: 52px; margin: -3px auto 0; }
+
+/* Hébergements : des nuages pour dormir */
+.deco-heberg-cloud { width: clamp(115px, 12vw, 160px); top: 7rem; right: 8%; animation: decoDrift 14s ease-in-out infinite alternate; }
+.deco-heberg-cloud2 { width: clamp(70px, 7vw, 95px); top: 12rem; right: 25%; animation: decoDrift 19s ease-in-out infinite alternate-reverse; }
+
+/* Accès : le couple à vélo traverse la section sur sa route */
+.deco-line-acces { left: 0; right: 0; bottom: 2.5rem; }
+.deco-ride-acces { bottom: calc(2.5rem - 2px); left: -240px; animation: decoRide 26s linear infinite; will-change: transform; }
+.deco-ride-acces svg { display: block; width: 170px; transform-origin: 50% 100%; animation: decoRock 1.6s ease-in-out infinite; }
+
+/* Programme : le train stationné en gare, sur son tronçon de rail
+   (le vrai trajet animé se joue dans la bannière) */
+.deco-line-programme { left: 55%; right: 0; top: calc(6rem + 100px); }
+.deco-ride-programme { top: 6rem; right: 4%; }
+.deco-ride-programme svg { display: block; width: 325px; }
+
+/* Contacts : le chat noir sur son perchoir */
+.deco-contacts-cat { width: 52px; bottom: calc(3.5rem - 3px); right: 14%; }
+.deco-line-contacts { width: 180px; bottom: 3.5rem; right: calc(14% - 64px); }
+
+/* Cagnotte : le maneki-neko sur son étagère */
+.deco-cagnotte-maneki { width: 84px; top: 7rem; right: 12%; transform-origin: 50% 100%; animation: decoRock 3.2s ease-in-out infinite; }
+.deco-line-cagnotte { width: 150px; top: calc(7rem + 105px); right: calc(12% - 33px); }
+
+/* Footer : les deux oiseaux saluent */
+footer { position: relative; }
+.deco-footer-birds { width: clamp(70px, 8vw, 95px); top: 2.2rem; right: 12%; animation: decoFloat 6.5s ease-in-out infinite; }
+
+@keyframes decoFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+@keyframes decoDrift {
+  from { transform: translateX(-14px); }
+  to   { transform: translateX(14px); }
+}
+@keyframes decoRock {
+  0%, 100% { transform: rotate(-2deg); }
+  50%      { transform: rotate(2deg); }
+}
+@keyframes decoSwing {
+  0%, 100% { transform: rotate(-3.5deg); }
+  50%      { transform: rotate(3.5deg); }
+}
+@keyframes decoRide {
+  from { transform: translateX(0); }
+  to   { transform: translateX(calc(100vw + 480px)); }
+}
+@media (max-width: 768px) {
+  .deco { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .illu-anim, .deco, .deco-ride-acces svg { animation: none !important; }
+  .deco-ride-acces { left: auto; right: 8%; }
+}
+
+/* ── JEU CACHÉ : LE CHAT PORTE-BONHEUR ──
+   Déclenché d'un clic sur le maneki-neko de la section Cagnotte.
+   Tout l'univers vient de l'illustration : Fuji, nuages, maneki, chat noir. */
+.deco-cagnotte-maneki { pointer-events: auto; cursor: pointer; }
+body.illustration-ready .deco-cagnotte-maneki:hover { opacity: 1; }
+
+#neko-overlay {
+  display: none; position: fixed; inset: 0; z-index: 500;
+  background: linear-gradient(180deg, #F2A5C8 0%, #F9D1E4 48%, #FCEDE4 100%);
+  overflow: hidden;
+  user-select: none;
+}
+#neko-overlay.active { display: block; }
+.neko-fuji {
+  position: absolute; bottom: 63px; left: 50%;
+  transform: translateX(-55%);
+  width: min(80vw, 920px);
+  pointer-events: none;
+}
+.neko-cloud { position: absolute; pointer-events: none; opacity: 0.9; }
+.neko-cloud1 { width: 200px; top: 12%; left: 8%; animation: nekoCloud 14s ease-in-out infinite alternate; }
+.neko-cloud2 { width: 120px; top: 22%; right: 10%; animation: nekoCloud 10s ease-in-out infinite alternate-reverse; }
+@keyframes nekoCloud {
+  from { transform: translateX(-30px); }
+  to   { transform: translateX(30px); }
+}
+.neko-header { position: absolute; top: 2rem; left: 0; right: 0; text-align: center; pointer-events: none; }
+.neko-title { font-family: var(--serif); font-style: italic; font-size: 1.3rem; color: #7C2D4A; margin-bottom: 0.4rem; font-weight: 300; }
+.neko-hint { font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(124, 45, 74, 0.75); }
+#neko-score {
+  position: absolute; top: 1.5rem; right: 2.2rem;
+  font-family: var(--display); font-size: 2.6rem; font-weight: 700; color: #7C2D4A;
+}
+#neko-score.neko-bump { animation: nekoBump 0.25s ease; }
+@keyframes nekoBump {
+  0%, 100% { transform: scale(1); }
+  40%      { transform: scale(1.35); }
+}
+#neko-hiscore {
+  position: absolute; top: 4.6rem; right: 2.2rem;
+  font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(124, 45, 74, 0.7);
+}
+.neko-petals { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.neko-petal {
+  position: absolute; top: -30px;
+  will-change: transform;
+  background: #F2A0C6;
+  border-radius: 62% 6% 62% 6%;
+  opacity: 0.65;
+  animation-name: nekoPetal;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+@keyframes nekoPetal {
+  0%   { transform: translate(0, -30px) rotate(0deg); }
+  100% { transform: translate(-130px, 106vh) rotate(340deg); }
+}
+.neko-plus {
+  position: absolute; left: 0; top: 0;
+  font-family: var(--display); font-size: 1.3rem; font-weight: 700; color: #7C2D4A;
+  pointer-events: none;
+  animation: nekoPlus 0.7s ease-out forwards;
+}
+@keyframes nekoPlus {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-48px); }
+}
+#neko-field { position: absolute; inset: 0; }
+.neko-item { position: absolute; left: 0; top: 0; will-change: transform; pointer-events: none; }
+.neko-coin {
+  width: 34px; height: 44px; margin-left: -17px;
+  background: linear-gradient(160deg, #FFD630 0%, #E0992E 100%);
+  border: 2.5px solid #6C4526;
+  border-radius: 50% / 46%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; color: #6C4526; font-weight: 600;
+}
+.neko-coin--big { width: 48px; height: 60px; margin-left: -24px; font-size: 13px; letter-spacing: -0.05em; }
+.neko-chat { width: 58px; margin-left: -29px; }
+.neko-chat svg { display: block; width: 100%; }
+#neko-player { position: absolute; bottom: 60px; left: 0; width: 92px; pointer-events: none; transform-origin: 50% 100%; will-change: transform; }
+#neko-player svg { display: block; width: 100%; transform-origin: 50% 100%; }
+#neko-player svg.neko-catch-anim { animation: nekoCatch 0.28s ease; }
+@keyframes nekoCatch {
+  0%, 100% { transform: scale(1, 1); }
+  35%      { transform: scale(1.14, 0.84); }
+}
+.neko-ground {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 66px;
+  background: #EBCDE9; border-top: 3px solid #1e1e1e;
+}
+.neko-close {
+  position: absolute; bottom: 1.3rem; right: 1.6rem;
+  background: none; border: 1px solid rgba(30,30,30,0.4); color: #1e1e1e;
+  font-family: var(--sans); font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase;
+  padding: 0.5rem 0.9rem; border-radius: 999px; cursor: pointer;
+}
+.neko-close:hover { background: rgba(30,30,30,0.08); }
+#neko-gameover {
+  display: none; position: absolute; inset: 0;
+  flex-direction: column; align-items: center; justify-content: center; gap: 0.7rem;
+  background: rgba(252, 240, 234, 0.85); backdrop-filter: blur(4px);
+  text-align: center;
+}
+#neko-gameover.active { display: flex; }
+.neko-go-title { font-family: var(--display); font-size: 2.1rem; font-weight: 700; color: #1e1e1e; }
+.neko-go-sub { font-size: 0.85rem; color: var(--gray-dark); margin-bottom: 0.8rem; }
+.neko-close-inline {
+  background: none; border: none; cursor: pointer;
+  font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--gray-dark); border-bottom: 1px solid var(--accent); padding-bottom: 0.1rem;
+}
+
+/* ── MODE NUIT (clic sur le soleil de l'illustration) ──
+   Couche ajoutée à la fin du SVG : voile sombre en fusion "multiply", halos chauds
+   sur les fenêtres en "screen", enseignes clonées au-dessus du voile en néon,
+   lune à la place du soleil, étoiles. */
+.banner-illustration .anim-sun,
+.banner-illustration .anim-sun * { pointer-events: auto; cursor: pointer; }
+.night-layer { opacity: 0; pointer-events: none; transition: opacity 1.2s ease; }
+body.night .night-layer { opacity: 1; }
+body.night .banner-illustration #g434 { opacity: 0; }
+.banner-illustration #g434 { transition: opacity 0.8s ease; }
+
+.night-overlay { fill: #1B2158; mix-blend-mode: multiply; opacity: 0.62; }
+/* La nuit, les personnages rentrent chez eux */
+.banner-illustration .illu-person, .banner-illustration #g7228 { transition: opacity 1.2s ease; }
+body.night .banner-illustration .illu-person, body.night .banner-illustration #g7228 { opacity: 0; }
+/* Fenêtres du train allumées : le trou du masque est un clone de la rame filtré
+   (zones claires = trou) qui rejoue exactement le trajet du train (unités racine = ×1,333) */
+.night-train-follow { animation: nightTrainRun 18s ease-in-out infinite; }
+@keyframes nightTrainRun {
+  0%        { transform: translateX(-240px); }
+  26%       { transform: translateX(0); }
+  58%       { transform: translateX(0); }
+  86%, 100% { transform: translateX(345.3px); }
+}
+#path1810, #path1570 { transition: fill 1.2s ease; }
+.night-neon--orange { filter: invert(1) brightness(1.4) drop-shadow(0 0 1.2px #FF8A5C) drop-shadow(0 0 5px rgba(255, 138, 92, 0.9)); }
+.night-stars circle { fill: #FFF6D2; animation: nightTwinkle 3s ease-in-out infinite; }
+.night-stars circle:nth-child(3n) { animation-duration: 2.2s; animation-delay: -0.7s; }
+.night-stars circle:nth-child(3n+1) { animation-duration: 3.6s; animation-delay: -1.9s; }
+.night-stars circle:nth-child(4n) { animation-delay: -1.2s; }
+/* Les clones <use> gardent le style de l'original (glyphes sombres) : on les
+   inverse en blanc par filtre, puis on ajoute le halo coloré du tube néon. */
+.night-neon--pink { filter: invert(1) brightness(1.4) drop-shadow(0 0 1.2px #FF62C8) drop-shadow(0 0 5px rgba(255, 98, 200, 0.9)); }
+.night-neon--cyan { filter: invert(1) brightness(1.4) drop-shadow(0 0 1.2px #7CF3FF) drop-shadow(0 0 5px rgba(124, 243, 255, 0.9)); }
+.night-neon--gold { filter: invert(1) brightness(1.4) drop-shadow(0 0 1.2px #FFD65C) drop-shadow(0 0 5px rgba(255, 214, 92, 0.9)); }
+@keyframes nightTwinkle {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 1; }
+}
+.night-moon { pointer-events: auto; cursor: pointer; transform-box: fill-box; transform-origin: center; animation: nightMoonFloat 8s ease-in-out infinite; }
+.night-moon path { fill: #FFF3C4; filter: drop-shadow(0 0 4px rgba(255, 243, 196, 0.9)) drop-shadow(0 0 14px rgba(255, 236, 170, 0.5)); }
+@keyframes nightMoonFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+body:not(.night) .night-moon { pointer-events: none; }
+@media (prefers-reduced-motion: reduce) {
+  .night-stars circle, .night-moon { animation: none !important; }
+}
+
+/* Nuit : stores tirés jusqu'en bas (les panneaux existants sont étirés depuis leur bord haut),
+   intérieurs des fenêtres, parts de pizza, chat et haltère de la salle de sport masqués */
+.illu-blind { transform-box: fill-box; transform-origin: 50% 100%; transition: transform 1.2s ease; }
+body.night .illu-blind--2l { transform: scaleY(1.78); }
+body.night .illu-blind--2r { transform: scaleY(2.6); }
+body.night .illu-blind--1l { transform: scaleY(1.64); }
+body.night .illu-blind--1r { transform: scaleY(2.24); }
+.banner-illustration :is(.illu-night-hide, .anim-press) { transition: opacity 1.2s ease; }
+body.night .banner-illustration :is(.illu-night-hide, .anim-press) { opacity: 0; }
+/* Nuit : la boutique ferme sa porte */
+.night-door { opacity: 0; transition: opacity 1.2s ease; pointer-events: none; }
+body.night .night-door { opacity: 1; }
+
+/* ── JEU CACHÉ : LE CONDUCTEUR ──
+   Déclenché d'un clic sur la rame de la section Programme. Un bouton : freiner
+   au bon moment pour arrêter le nez du train sur la ligne du quai. */
+.deco-ride-programme { pointer-events: auto; cursor: pointer; }
+body.illustration-ready .deco-ride-programme:hover { opacity: 1; }
+#cond-overlay {
+  display: none; position: fixed; inset: 0; z-index: 500;
+  background: linear-gradient(180deg, #F2A5C8 0%, #F9D1E4 48%, #FCEDE4 100%);
+  overflow: hidden; user-select: none; cursor: pointer;
+  transition: background 1s ease;
+}
+#cond-overlay.active { display: block; }
+#cond-overlay.wet { background: linear-gradient(180deg, #B99BC0 0%, #D8BFD6 48%, #EADFE0 100%); }
+/* Pluie : motif fixe déplacé par transform (composé par le GPU, pas de repeinture plein écran) */
+.cond-rain { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity 0.8s ease; overflow: hidden; }
+.cond-rain::before { content: ''; position: absolute; left: 0; right: 0; top: -200px; bottom: 0;
+  background-image: repeating-linear-gradient(112deg, transparent 0 22px, rgba(255,255,255,0.55) 22px 23px, transparent 23px 40px);
+  background-size: 200px 200px; will-change: transform; animation: condRain 0.5s linear infinite; }
+#cond-overlay.wet .cond-rain { opacity: 0.55; }
+@keyframes condRain { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-60px, 200px, 0); } }
+#cond-score {
+  position: absolute; top: 1.5rem; right: 2.2rem;
+  font-family: var(--display); font-size: 2.6rem; font-weight: 700; color: #7C2D4A;
+}
+#cond-score.neko-bump { animation: nekoBump 0.25s ease; }
+#cond-round {
+  position: absolute; top: 4.6rem; right: 2.2rem;
+  font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(124, 45, 74, 0.7);
+}
+.cond-chip {
+  position: absolute; left: 50%; top: 22%; transform: translate(-50%, 0) scale(0.9);
+  padding: 0.55rem 1.3rem; border-radius: 999px;
+  background: #1B1A2E; color: #FFE9F6;
+  font-family: var(--display); font-size: 0.85rem; letter-spacing: 0.14em; text-transform: uppercase;
+  opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease; pointer-events: none; white-space: nowrap;
+}
+.cond-chip.show { opacity: 1; transform: translate(-50%, 0) scale(1); }
+.cond-rail { position: absolute; left: 0; right: 0; bottom: 118px; height: 3px; background: #2b2b2a; }
+.cond-platform {
+  position: absolute; left: 40%; right: 4%; bottom: 66px; height: 52px;
+  background: #D9B8DC; border-top: 3px solid #1e1e1e;
+  background-image: repeating-linear-gradient(90deg, transparent 0 46px, rgba(30,30,30,0.18) 46px 47px);
+}
+.cond-canopy { position: absolute; left: 46%; right: 6%; bottom: 300px; height: 14px; background: #2b2b2a; border-radius: 3px; }
+.cond-canopy::before, .cond-canopy::after {
+  content: ''; position: absolute; top: 14px; width: 4px; height: 182px; background: #2b2b2a;
+}
+.cond-canopy::before { left: 12%; } .cond-canopy::after { right: 12%; }
+.cond-canopy span { display: none; }
+.cond-bench { position: absolute; bottom: 121px; left: 48%; width: 54px; height: 10px; background: #B67A4B; border: 2px solid #2b2b2a; border-radius: 3px; }
+.cond-bench::before, .cond-bench::after { content: ''; position: absolute; top: 8px; width: 3px; height: 9px; background: #2b2b2a; }
+.cond-bench::before { left: 6px; } .cond-bench::after { right: 6px; }
+.cond-sign { position: absolute; bottom: 118px; height: 120px; width: 3px; background: #2b2b2a; }
+.cond-sign span {
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  padding: 0.35rem 0.9rem; white-space: nowrap;
+  background: #1B1A2E; color: #FFE9F6; border-radius: 6px;
+  font-family: var(--display); font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase;
+  box-shadow: 0 0 0 2px #1e1e1e;
+}
+.cond-marker { position: absolute; bottom: 121px; width: 0; height: 150px; border-left: 3px dashed #EB5B50; transition: left 0.6s ease; }
+.cond-marker::before { content: ''; position: absolute; top: -14px; left: -9px; border: 8px solid transparent; border-top: 12px solid #EB5B50; }
+.cond-marker.hit { border-left-color: #2D8A4E; }
+.cond-marker.hit::before { border-top-color: #2D8A4E; }
+#cond-train { position: absolute; bottom: 121px; left: 0; will-change: transform; pointer-events: none; transform-origin: 100% 100%; }
+#cond-train svg { display: block; width: 100%; transition: transform 0.25s ease; transform-origin: 100% 100%; }
+#cond-train.braking svg { transform: rotate(-0.8deg) scaleX(0.985); }
+#cond-cat { position: absolute; bottom: 121px; width: 46px; pointer-events: none; transition: transform 0.9s ease, opacity 0.6s ease 0.4s; }
+#cond-cat svg { display: block; width: 100%; }
+#cond-cat.boarded { opacity: 0; }
+#cond-fx { position: absolute; inset: 0; pointer-events: none; }
+.cond-spark { position: absolute; width: 4px; height: 4px; border-radius: 1px; background: #FFB347; box-shadow: 0 0 6px #FF8A3D; }
+.cond-petal { position: absolute; width: 12px; height: 10px; background: #F2A0C6; border-radius: 62% 6% 62% 6%; animation: condPetal 1.3s ease-out forwards; }
+@keyframes condPetal { from { opacity: 1; transform: translate(0, 0) rotate(0deg); } to { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(300deg); } }
+.cond-points { position: absolute; font-family: var(--display); font-size: 1.6rem; font-weight: 700; color: #7C2D4A; animation: nekoPlus 0.9s ease-out forwards; pointer-events: none; }
+.cond-gauge { position: absolute; left: 2rem; bottom: 1.6rem; width: 150px; pointer-events: none; }
+.cond-gauge svg { display: block; width: 100%; }
+#cond-needle { transition: transform 0.12s linear; }
+#cond-arc { transition: stroke-dashoffset 0.12s linear; }
+.cond-gauge-val { position: absolute; left: 0; right: 0; top: 40px; text-align: center; font-family: var(--display); font-size: 1.5rem; font-weight: 700; color: #1e1e1e; line-height: 1; }
+.cond-gauge-val small { display: block; font-family: var(--sans); font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(30,30,30,0.6); margin-top: 2px; }
+.cond-brakelamp { position: absolute; left: 50%; top: 82px; transform: translateX(-50%); padding: 0.2rem 0.7rem; border-radius: 999px;
+  font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(30,30,30,0.4); border: 1px solid rgba(30,30,30,0.25); background: transparent; transition: all 0.15s ease; }
+.cond-brakelamp.on { color: #fff; background: #EB5B50; border-color: #EB5B50; box-shadow: 0 0 12px rgba(235, 91, 80, 0.8); }
+#cond-result {
+  position: absolute; left: 0; right: 0; top: 34%; text-align: center; pointer-events: none;
+  font-family: var(--display); font-size: 2.2rem; font-weight: 700; color: #7C2D4A;
+  opacity: 0; transition: opacity 0.2s ease;
+}
+#cond-result.show { opacity: 1; }
+#cond-result small { display: block; font-family: var(--sans); font-weight: 400; font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; margin-top: 0.3rem; color: rgba(124, 45, 74, 0.8); }
+#cond-gameover {
+  display: none; position: absolute; inset: 0;
+  flex-direction: column; align-items: center; justify-content: center; gap: 0.7rem;
+  background: rgba(252, 240, 234, 0.85); backdrop-filter: blur(4px); text-align: center; cursor: default;
+}
+#cond-gameover.active { display: flex; }
+.cond-stars { font-size: 1.6rem; letter-spacing: 0.3em; color: #EB5B50; }
+
+/* Pendant une partie : la page derrière l'overlay n'est plus peinte ni animée.
+   .banner-section n'est PAS masquée : les jeux réutilisent ses symboles SVG (chat, train) via <use>. */
+body.game-open nav, body.game-open section.page, body.game-open footer { visibility: hidden; }
+body.game-open .illu-anim, body.game-open .deco, body.game-open .night-layer * { animation-play-state: paused !important; }
+
+/* ── EASTER EGG : PLUIE DE CŒURS (taper L-O-V-E, ou 3 tapes sur le & du héros) ── */
+#love-rain { position: fixed; inset: 0; pointer-events: none; z-index: 400; overflow: hidden; }
+.love-heart { position: absolute; top: -10vh; will-change: transform; animation: loveFall var(--d) linear forwards; }
+.love-heart svg { display: block; width: 100%; height: 100%; animation: loveSway var(--s) ease-in-out infinite alternate; filter: drop-shadow(0 4px 6px rgba(120, 30, 40, 0.18)); }
+@keyframes loveFall { to { transform: translateY(120vh) rotate(var(--r)); } }
+@keyframes loveSway { from { transform: translateX(-16px); } to { transform: translateX(16px); } }
+.hero-amp { cursor: default; }
+
+/* Mobile : le héros / compte à rebours a son propre écran, distinct de l'illustration */
+@media (max-width: 768px) {
+  #accueil { min-height: 100vh; min-height: 100svh; padding: 5.5rem 1.5rem 3.5rem; }
 }
