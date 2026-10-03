@@ -717,8 +717,8 @@ footer p {
   #hero-content { padding: 1.5rem 1rem; }
 }
 
-@media (max-width: 680px) {
-  nav { padding: 1rem 1.5rem; }
+/* Tablette et en dessous : les 7 liens ne tiennent plus sur une ligne → menu burger */
+@media (max-width: 1279px) {
   .nav-burger { display: flex; }
   .nav-links {
     display: none;
@@ -730,14 +730,24 @@ footer p {
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--gray-light);
     padding: 0.5rem 0;
+    /* Téléphone en paysage : le menu déroulé dépasse l'écran → il défile */
+    max-height: calc(100vh - 4.5rem);
+    max-height: calc(100svh - 4.5rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
   .nav-links li { border-bottom: 1px solid var(--gray-light); }
   .nav-links a {
     display: block;
     font-size: 0.65rem;
-    padding: 0.9rem 1.5rem;
+    padding: 0.9rem 3rem;
   }
   nav.nav-open .nav-links { display: flex; }
+}
+
+@media (max-width: 680px) {
+  nav { padding: 1rem 1.5rem; }
+  .nav-links a { padding: 0.9rem 1.5rem; }
   .page { padding: 7rem 1.5rem 4rem; }
   .info-grid { grid-template-columns: 1fr; }
   .acces-grid { max-width: none; }
@@ -795,6 +805,31 @@ footer p {
   .timeline-item { padding-bottom: 1.1rem; }
 }
 
+/* Écrans larges mais peu hauts (tablette en paysage, petit portable) : Accès et Programme
+   dépassent un écran une fois empilés. On profite de la largeur : titre + texte à gauche,
+   carte / frise à droite, pour que chaque section tienne sur une seule page. */
+@media (min-width: 800px) and (max-height: 860px) {
+  #acces .page-inner, #programme .page-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    column-gap: 3.5rem;
+    align-items: start;
+  }
+  /* Dernière rangée en 1fr : la colonne de gauche reste tassée en haut */
+  #acces .page-inner { grid-template-rows: auto auto auto auto 1fr; }
+  #programme .page-inner { grid-template-rows: auto auto auto 1fr; }
+  #acces .page-inner > *, #programme .page-inner > * { grid-column: 1; }
+  #acces .page-inner > :last-child { grid-column: 2; grid-row: 1 / span 5; margin-top: 0; }
+  #programme .page-inner > :last-child { grid-column: 2; grid-row: 1 / span 4; align-self: center; }
+  .acces-steps { grid-template-columns: 1fr; }
+  .acces-map-iframe { height: clamp(200px, calc(100vh - 300px), 360px); }
+}
+
+/* Paysage très bas (≈ 600px utiles) : on rogne encore le padding vertical */
+@media (min-width: 681px) and (max-height: 640px) {
+  .page { padding-top: 5rem; padding-bottom: 2rem; }
+}
+
 /* Mobile : les colonnes passent en 1 seule (grilles/hôtels empilés), donc plus hautes
    que la version desktop tassée ci-dessus — on resserre encore, en priorité sur elle. */
 @media (max-width: 680px) {
@@ -811,7 +846,8 @@ footer p {
   .booking-links { grid-template-columns: 1fr; max-width: 320px; margin: 0 auto; }
   .booking-card { flex-direction: row; justify-content: flex-start; text-align: left; padding: 1rem 1.4rem; gap: 1rem; }
 
-  .acces-map-iframe { height: 260px; }
+  /* Carte proportionnelle à la hauteur visible : la section tient sur un écran, même sur grands téléphones */
+  .acces-map-iframe { height: clamp(150px, calc(100vh - 600px), 260px); height: clamp(150px, calc(100svh - 600px), 260px); }
   .acces-steps li { padding: 0.4rem 0 0.4rem 2.2rem; }
 
   .timeline-item { padding-bottom: 0.9rem; }
@@ -843,7 +879,7 @@ footer p {
   .booking-card-name { font-size: 0.85rem; }
   .section-note { margin-top: 0.4rem; font-size: 0.65rem; line-height: 1.35; }
 
-  .acces-map-iframe { height: 200px; }
+  .acces-map-iframe { height: clamp(130px, calc(100vh - 480px), 200px); height: clamp(130px, calc(100svh - 480px), 200px); }
   .acces-steps li { padding: 0.25rem 0 0.25rem 2rem; font-size: 0.78rem; }
   .acces-block-title { font-size: 1rem; margin-bottom: 0.3rem; }
 
@@ -989,6 +1025,12 @@ body.illustration-ready .deco-hero-fuji { opacity: 0.3; }
 .deco-line-programme { left: 55%; right: 0; top: calc(6rem + 100px); }
 .deco-ride-programme { top: 6rem; right: 4%; }
 .deco-ride-programme svg { display: block; width: 325px; }
+/* Programme en 2 colonnes (voir plus haut) : la frise occupe le haut-droite,
+   le train descend en bas de la colonne de gauche */
+@media (min-width: 800px) and (max-height: 860px) {
+  .deco-ride-programme { top: auto; right: auto; bottom: 2.5rem; left: 3rem; }
+  .deco-line-programme { top: auto; right: auto; bottom: 2.5rem; left: 0; width: calc(3rem + 360px); }
+}
 
 /* Contacts : le chat noir sur son perchoir */
 .deco-contacts-cat { width: 52px; bottom: calc(3.5rem - 3px); right: 14%; }
@@ -1323,4 +1365,21 @@ body.game-open .illu-anim, body.game-open .deco, body.game-open .night-layer * {
 /* Mobile : le héros / compte à rebours a son propre écran, distinct de l'illustration */
 @media (max-width: 768px) {
   #accueil { min-height: 100vh; min-height: 100svh; padding: 5.5rem 1.5rem 3.5rem; }
+}
+
+/* Téléphone en paysage (≈ 340-400px utiles) : barre de menu compacte, sections moins aérées.
+   Les sections ne peuvent pas tenir sur un écran : on vise surtout à ne pas gaspiller de hauteur. */
+@media (max-height: 500px) and (orientation: landscape) {
+  nav { padding: 0.6rem 1.5rem; }
+  .nav-links a { padding: 0.7rem 1.5rem; }
+  .nav-links { max-height: calc(100vh - 3rem); max-height: calc(100svh - 3rem); }
+  .page { padding-top: 3.5rem; padding-bottom: 1.5rem; }
+  /* Décorations masquées, comme en portrait : elles chevaucheraient le texte */
+  .deco { display: none; }
+  .banner-section { padding-top: 3.75rem; }
+  .banner-illustration { height: min(calc(100vh - 8rem), calc((100vw - 4rem) * 1.3873)); height: min(calc(100svh - 8rem), calc((100vw - 4rem) * 1.3873)); }
+  #accueil { padding: 4rem 2rem 2rem; }
+  .hero-zigzag { margin-bottom: 0.6rem; }
+  .hero-names { font-size: clamp(2.2rem, 6vw, 3rem); }
+  .countdown { margin-top: 1rem; }
 }
