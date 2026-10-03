@@ -18,6 +18,7 @@
 }
 
 html {
+  color-scheme: only light; /* pas d'assombrissement auto en mode sombre (voir meta color-scheme) */
   scroll-behavior: smooth;
   scroll-snap-type: y proximity;
 }
