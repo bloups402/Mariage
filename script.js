@@ -437,15 +437,33 @@ document.querySelectorAll('.nav-links a').forEach(a => {
 // ── NAV ACTIVE ──
 const sections = document.querySelectorAll('section[id]');
 const navLinks = document.querySelectorAll('.nav-links a');
-window.addEventListener('scroll', () => {
-  let current = '';
-  sections.forEach(s => {
-    if (window.scrollY >= s.offsetTop - 120) current = s.id;
-  });
-  navLinks.forEach(a => {
-    a.style.color = a.getAttribute('href') === '#' + current ? 'var(--accent)' : '';
-  });
-});
+(function () {
+  // Un seul calcul par frame (lire offsetTop à chaque événement force une mise en page
+  // et fait saccader le défilement au doigt).
+  let raf = null, lastCurrent = null;
+  function update() {
+    raf = null;
+    let current = '';
+    const y = window.scrollY + 120;
+    sections.forEach(s => { if (y >= s.offsetTop) current = s.id; });
+    if (current === lastCurrent) return;
+    lastCurrent = current;
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === '#' + current ? 'var(--accent)' : '';
+    });
+  }
+  window.addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
+  update();
+})();
+
+// ── PAUSE DES ANIMATIONS DE LA BANNIÈRE HORS ÉCRAN ──
+(function () {
+  const banner = document.getElementById('photo');
+  if (!banner || !('IntersectionObserver' in window)) return;
+  new IntersectionObserver(([entry]) => {
+    document.body.classList.toggle('banner-offscreen', !entry.isIntersecting);
+  }).observe(banner);
+})();
 
 // ── JEU BAGUETTE ──
 (function () {

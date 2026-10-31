@@ -1384,3 +1384,25 @@ body.game-open .illu-anim, body.game-open .deco, body.game-open .night-layer * {
   .hero-names { font-size: clamp(2.2rem, 6vw, 3rem); }
   .countdown { margin-top: 1rem; }
 }
+
+/* ── SCROLL MOBILE ──
+   Le content-visibility faisait varier la hauteur des sections pendant un lancer et les
+   hauteurs en 100vh ne correspondaient pas à l'écran visible (barre d'adresse) : l'aimantation
+   visait donc des positions qui bougeaient → saccades. Avec des hauteurs stables (100svh,
+   sections toujours rendues), on garde une aimantation légère (proximity) : elle ne retient
+   le défilement que lorsqu'on s'arrête près du début d'une section, et laisse défiler
+   librement l'intérieur des sections plus hautes que l'écran. */
+@media (max-width: 768px), (hover: none) and (pointer: coarse) {
+  html { scroll-snap-type: y proximity; }
+  #accueil { scroll-snap-align: start; }
+  .page { content-visibility: visible; min-height: 100svh; }
+  /* Flou d'arrière-plan recalculé à chaque frame de scroll : fond plus opaque à la place */
+  nav, .nav-links {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  nav { background: linear-gradient(90deg, rgba(252,240,234,0.98) 0%, rgba(252,222,234,0.97) 50%, rgba(252,240,234,0.98) 100%); }
+}
+
+/* Illustration de bannière hors écran : animations en pause */
+body.banner-offscreen .illu-anim { animation-play-state: paused !important; }
